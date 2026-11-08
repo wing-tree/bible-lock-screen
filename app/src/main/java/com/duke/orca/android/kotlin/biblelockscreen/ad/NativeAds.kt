@@ -116,6 +116,9 @@ object NativeAds {
 }
 
 object LevelPlayKeys {
-    // LevelPlay 대시보드에서 이 앱을 등록한 뒤 채운다. 비어 있으면 광고가 나오지 않는다.
-    const val APP_KEY = ""
+    // 비어 있으면 광고가 나오지 않는다.
+    const val APP_KEY = "295fa9cad"
+
+    // 네이티브 광고 단위. SDK 9.7 네이티브 API 는 단위 ID 를 받지 않아(앱 키로 대시보드 단위가 잡힌다) 받아만 둔다.
+    const val NATIVE_AD_UNIT_ID = "phckhlax6jdk9td4"
 }
