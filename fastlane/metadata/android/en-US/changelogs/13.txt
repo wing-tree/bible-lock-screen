@@ -1,0 +1,4 @@
+- Verse of the day: start the lock screen from a hand-picked verse each day
+- Favorites only: browse just your favorite verses on the lock screen
+- Share a verse as an image
+- Fixed spacing around ß in German

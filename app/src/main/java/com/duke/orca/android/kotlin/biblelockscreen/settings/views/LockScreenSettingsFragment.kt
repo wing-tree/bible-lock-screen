@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.duke.orca.android.kotlin.biblelockscreen.R
 import com.duke.orca.android.kotlin.biblelockscreen.base.LinearLayoutManagerWrapper
@@ -16,9 +17,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LockScreenSettingsFragment : PreferenceFragment() {
+class LockScreenSettingsFragment : PreferenceFragment(),
+    VerseOrderChoiceDialogFragment.OnItemClickListener {
     private object Id {
         const val DISPLAY_AFTER_UNLOCKING = 0L
+        const val VERSE_ORDER = 1L
     }
 
     override val toolbar by lazy { viewBinding.toolbar }
@@ -42,6 +45,7 @@ class LockScreenSettingsFragment : PreferenceFragment() {
         val displayAfterUnlocking = DataStore.LockScreen.getDisplayAfterUnlocking(requireContext())
         val showOnLockScreen = DataStore.LockScreen.getShowOnLockScreen(requireContext())
         val unlockWithBackKey = DataStore.LockScreen.getUnlockWithBackKey(requireContext())
+        val verseOrder = DataStore.LockScreen.getVerseOrder(requireContext())
 
         with(items) {
             add(
@@ -103,6 +107,23 @@ class LockScreenSettingsFragment : PreferenceFragment() {
                     body = getString(R.string.unlock_with_back_button)
                 )
             )
+
+            add(
+                AdapterItem.Preference(
+                    drawable = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_round_format_list_bulleted_24
+                    ),
+                    id = Id.VERSE_ORDER,
+                    onClick = {
+                        VerseOrderChoiceDialogFragment().also {
+                            it.show(childFragmentManager, it.tag)
+                        }
+                    },
+                    summary = getString(VerseOrderChoiceDialogFragment.nameOf(verseOrder)),
+                    body = getString(R.string.verse_order)
+                )
+            )
         }
 
         with(items.toMutableList()) {
@@ -112,6 +133,15 @@ class LockScreenSettingsFragment : PreferenceFragment() {
 
             preferenceAdapter.submitList(toList())
         }
+    }
+
+    override fun onVerseOrderClick(dialogFragment: DialogFragment, item: Int) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            DataStore.LockScreen.putVerseOrder(requireContext(), item)
+        }
+
+        preferenceAdapter.updateSummary(Id.VERSE_ORDER, getString(VerseOrderChoiceDialogFragment.nameOf(item)))
+        dialogFragment.dismiss()
     }
 
     private fun bind() {

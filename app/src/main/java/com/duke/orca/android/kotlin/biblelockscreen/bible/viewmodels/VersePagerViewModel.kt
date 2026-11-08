@@ -33,6 +33,10 @@ class VersePagerViewModel @Inject constructor(
         return verseRepository.getVerseCount(book, chapter)
     }
 
+    suspend fun getFavoriteIds(): IntArray {
+        return verseRepository.getFavorites().first().map { it.id }.sorted().toIntArray()
+    }
+
     suspend fun get(book: Int, chapter: Int, verse: Int): Verse? {
         return verseRepository.get(book, chapter, verse).first()
     }

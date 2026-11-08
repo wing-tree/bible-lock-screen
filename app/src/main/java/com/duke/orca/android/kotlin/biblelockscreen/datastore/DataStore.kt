@@ -145,6 +145,19 @@ object DataStore {
         fun getDisplayAfterUnlocking(context: Context) = getBoolean(context, PreferencesKeys.LockScreen.displayAfterUnlocking, false)
         fun getShowOnLockScreen(context: Context) = getBoolean(context, PreferencesKeys.LockScreen.showOnLockScreen, true)
         fun getUnlockWithBackKey(context: Context) = getBoolean(context, PreferencesKeys.LockScreen.unlockWithBackKey, true)
+        fun getVerseOrder(context: Context) = getInt(context, PreferencesKeys.LockScreen.verseOrder, VerseOrder.SEQUENTIAL)
+
+        // 잠금화면을 띄울 때 어느 구절에서 시작할지.
+        object VerseOrder {
+            const val SEQUENTIAL = 0 // 마지막으로 본 구절부터
+            const val DAILY = 1 // 오늘의 말씀(엄선 구절 하루 하나)부터
+            const val FAVORITES = 2 // 즐겨찾기한 구절만
+        }
+
+        suspend fun putVerseOrder(context: Context, value: Int) {
+            putInt(context, PreferencesKeys.LockScreen.verseOrder, value)
+        }
+
         suspend fun putDisplayAfterUnlocking(context: Context, value: Boolean) {
             putBoolean(context, PreferencesKeys.LockScreen.displayAfterUnlocking, value)
         }

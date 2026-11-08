@@ -54,6 +54,10 @@
     <string name="text_alignment">텍스트 정렬</string>
     <string name="translations">번역본</string>
     <string name="unlock_with_back_button">백 버튼으로 잠금해제</string>
+    <string name="verse_order">구절 순서</string>
+    <string name="verse_order_daily">오늘의 말씀</string>
+    <string name="verse_order_favorites">즐겨찾기만</string>
+    <string name="verse_order_sequential">순서대로</string>
     <string name="version">버전</string>
     <string name="write_review">리뷰 쓰기</string>
 

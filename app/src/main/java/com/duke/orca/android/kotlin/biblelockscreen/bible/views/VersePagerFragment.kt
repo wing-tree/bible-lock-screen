@@ -23,6 +23,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.base.views.BaseDialogFragmen
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.BaseFragment
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.FragmentContainerActivity
 import com.duke.orca.android.kotlin.biblelockscreen.bible.adapters.VersePagerAdapter
+import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.DailyVerses
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.BookToChapters
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Verse
 import com.duke.orca.android.kotlin.biblelockscreen.bible.pagetransformer.PageTransformer
@@ -85,7 +86,7 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            viewModel.get(position)
+            viewModel.get(versePagerAdapter.idAt(position))
             updateArrows(position)
             placeAd(position)
         }
@@ -105,7 +106,10 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
         NativeAds.onSwiped()
 
         val next = if (position > previous) position.inc() else position.dec()
-        val fragment = childFragmentManager.findFragmentByTag("f$next") as? VerseFragment ?: return
+
+        if (next !in 0 until versePagerAdapter.itemCount) return
+
+        val fragment = childFragmentManager.findFragmentByTag("f${versePagerAdapter.getItemId(next)}") as? VerseFragment ?: return
         val nativeAd = NativeAds.take() ?: return
 
         if (fragment.showAd(nativeAd).not()) {
@@ -143,11 +147,13 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
                     hide(true)
                     viewBinding.viewNextFake.hide(true)
                 } else {
-                    if (currentVerse?.id.isNonZero()) {
+                    val position = viewBinding.viewPager2.currentItem
+
+                    if (position > 0) {
                         show()
                     }
 
-                    if (currentVerse?.id.not(VERSE_COUNT.dec())) {
+                    if (position < versePagerAdapter.itemCount.dec()) {
                         viewBinding.viewNextFake.show()
                     }
 
@@ -211,7 +217,11 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
     }
 
     override fun onDestroyView() {
-        DataStore.Verse.putCurrentVerse(requireContext(), viewBinding.viewPager2.currentItem)
+        // 구절을 정하기 전에 화면이 닫히면 저장된 자리를 덮어쓰지 않는다.
+        if (viewBinding.viewPager2.adapter != null) {
+            DataStore.Verse.putCurrentVerse(requireContext(), versePagerAdapter.idAt(viewBinding.viewPager2.currentItem))
+        }
+
         viewBinding.viewPreviousFake.viewTreeObserver.removeOnDrawListener(onDrawListener)
         viewBinding.viewPager2.unregisterOnPageChangeCallback(onPageChangeCallback)
         viewBinding.viewPager2.adapter = null
@@ -299,12 +309,16 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
 
         setPageTransformer(PageMargin.medium, false)
 
-        viewBinding.viewPager2.adapter = versePagerAdapter
-        viewBinding.viewPager2.offscreenPageLimit = limit
-        viewBinding.viewPager2.registerOnPageChangeCallback(onPageChangeCallback)
-        viewBinding.viewPager2.setCurrentItem(DataStore.Verse.getCurrentVerse(requireContext()), false)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val start = startVerse()
 
-        getBehaviourSubject(Key.VIEW_PAGER2)?.onNext(Unit)
+            viewBinding.viewPager2.adapter = versePagerAdapter
+            viewBinding.viewPager2.offscreenPageLimit = limit
+            viewBinding.viewPager2.registerOnPageChangeCallback(onPageChangeCallback)
+            viewBinding.viewPager2.setCurrentItem(versePagerAdapter.positionOf(start).coerceAtLeast(0), false)
+
+            getBehaviourSubject(Key.VIEW_PAGER2)?.onNext(Unit)
+        }
     }
 
     private fun subscribe() {
@@ -378,13 +392,37 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
     // 첫 구절·마지막 구절에서는 더 갈 곳이 없는 쪽 화살표를 숨긴다.
     private fun updateArrows(position: Int) {
         viewBinding.imageViewPrevious.visibility = if (position > 0) View.VISIBLE else View.INVISIBLE
-        viewBinding.imageViewNext.visibility = if (position < VERSE_COUNT.dec()) View.VISIBLE else View.INVISIBLE
+        viewBinding.imageViewNext.visibility = if (position < versePagerAdapter.itemCount.dec()) View.VISIBLE else View.INVISIBLE
+    }
+
+    // 설정한 구절 순서에 맞춰 시작할 구절 id 를 정한다. 즐겨찾기만 보기면 넘길 목록도 여기서 정한다.
+    private suspend fun startVerse(): Int {
+        val context = requireContext()
+        val current = DataStore.Verse.getCurrentVerse(context)
+
+        return when (DataStore.LockScreen.getVerseOrder(context)) {
+            DataStore.LockScreen.VerseOrder.DAILY -> DailyVerses.today().let { (book, chapter, verse) ->
+                viewModel.get(book, chapter, verse)?.id ?: current
+            }
+            DataStore.LockScreen.VerseOrder.FAVORITES -> {
+                // 즐겨찾기가 없으면 성경 전체를 그대로 넘긴다.
+                viewModel.getFavoriteIds().takeIf { it.isNotEmpty() }?.let { versePagerAdapter.ids = it }
+                current
+            }
+            else -> current
+        }
     }
 
     private fun moveTo(book: Int, chapter: Int, verse: Int) {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.get(book, chapter, verse)?.let {
-                viewBinding.viewPager2.setCurrentItem(it.id, false)
+                // 즐겨찾기만 보다가 목록에 없는 구절로 가면 성경 전체로 돌아간다.
+                if (versePagerAdapter.positionOf(it.id) < 0) {
+                    versePagerAdapter.ids = null
+                    versePagerAdapter.notifyDataSetChanged()
+                }
+
+                viewBinding.viewPager2.setCurrentItem(versePagerAdapter.positionOf(it.id), false)
             }
         }
     }

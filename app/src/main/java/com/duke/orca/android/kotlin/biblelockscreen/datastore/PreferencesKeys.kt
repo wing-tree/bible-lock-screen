@@ -42,6 +42,7 @@ object PreferencesKeys {
         val displayAfterUnlocking = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.displayAfterUnlocking")
         val showOnLockScreen = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.showOnLockScreen")
         val unlockWithBackKey = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.unlockWithBackKey")
+        val verseOrder = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.verseOrder")
     }
 
     object Translation {
