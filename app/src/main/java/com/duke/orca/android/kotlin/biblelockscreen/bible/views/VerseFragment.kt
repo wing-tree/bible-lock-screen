@@ -26,6 +26,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Cont
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Font
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Verse
 import com.duke.orca.android.kotlin.biblelockscreen.bible.share
+import com.duke.orca.android.kotlin.biblelockscreen.bible.shareAsImage
 import com.duke.orca.android.kotlin.biblelockscreen.bible.viewmodels.VerseViewModel
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.FragmentVerseBinding
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.NativeAdVerseBinding
@@ -39,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class VerseFragment : BaseFragment<FragmentVerseBinding>(),
     OptionChoiceDialogFragment.OnOptionChoiceListener {
     private val viewModel by viewModels<VerseViewModel>()
-    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share)) }
+    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share), getString(R.string.share_as_image)) }
     private val onResumed = AtomicBoolean(false)
 
     private var currentFont: Font? = null
@@ -255,6 +256,10 @@ class VerseFragment : BaseFragment<FragmentVerseBinding>(),
             }
             options[1] -> {
                 share(requireContext(), viewModel.bible,  content)
+                dialogFragment.dismiss()
+            }
+            options[2] -> {
+                shareAsImage(requireContext(), viewModel.bible, content)
                 dialogFragment.dismiss()
             }
         }

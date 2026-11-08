@@ -46,6 +46,7 @@
     <string name="request_app_permissions">앱 권한 요청</string>
     <string name="search">검색</string>
     <string name="share">공유</string>
+    <string name="share_as_image">이미지로 공유</string>
     <string name="settings">설정</string>
     <string name="share_the_app">앱 공유하기</string>
     <string name="show_on_lock_screen">잠금화면에 표시</string>

@@ -22,6 +22,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.bible.adapters.VerseAdapter
 import com.duke.orca.android.kotlin.biblelockscreen.bible.copyToClipboard
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.share
+import com.duke.orca.android.kotlin.biblelockscreen.bible.shareAsImage
 import com.duke.orca.android.kotlin.biblelockscreen.bible.viewmodels.FavoritesViewModel
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.FragmentFavoritesBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,7 +64,7 @@ class FavoritesFragment : BaseFragment<FragmentFavoritesBinding>(),
         arguments?.getBoolean(Key.FRAGMENT_RESULT_SET_REQUIRED) ?: false
     }
 
-    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share)) }
+    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share), getString(R.string.share_as_image)) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -132,6 +133,10 @@ class FavoritesFragment : BaseFragment<FragmentFavoritesBinding>(),
             }
             options[1] -> {
                 share(requireContext(), viewModel.bibleBook, content)
+                dialogFragment.dismiss()
+            }
+            options[2] -> {
+                shareAsImage(requireContext(), viewModel.bibleBook, content)
                 dialogFragment.dismiss()
             }
         }

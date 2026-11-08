@@ -25,6 +25,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.bible.copyToClipboard
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Verse
 import com.duke.orca.android.kotlin.biblelockscreen.bible.share
+import com.duke.orca.android.kotlin.biblelockscreen.bible.shareAsImage
 import com.duke.orca.android.kotlin.biblelockscreen.bible.viewmodels.BibleVerseSearchViewModel
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.FragmentSearchBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +57,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(),
     }
 
     private val color by lazy { ContextCompat.getColor(requireContext(), R.color.secondary) }
-    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share)) }
+    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share), getString(R.string.share_as_image)) }
 
     private var currentQuery = BLANK
     private var timerTask: TimerTask? = null
@@ -201,6 +202,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(),
             }
             options[1] -> {
                 share(requireContext(), viewModel.bibleBook, content)
+                dialogFragment.dismiss()
+            }
+            options[2] -> {
+                shareAsImage(requireContext(), viewModel.bibleBook, content)
                 dialogFragment.dismiss()
             }
         }

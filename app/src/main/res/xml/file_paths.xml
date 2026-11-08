@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 구절 이미지 공유용. 캐시의 shared 폴더만 내보낸다. -->
+<paths>
+    <cache-path name="shared" path="shared/" />
+</paths>

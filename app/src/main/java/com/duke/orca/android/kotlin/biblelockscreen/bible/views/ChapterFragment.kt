@@ -22,6 +22,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.bible.adapters.WordAdapter
 import com.duke.orca.android.kotlin.biblelockscreen.bible.copyToClipboard
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.share
+import com.duke.orca.android.kotlin.biblelockscreen.bible.shareAsImage
 import com.duke.orca.android.kotlin.biblelockscreen.bible.viewmodels.ChapterViewModel
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.FragmentChapterBinding
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
@@ -69,7 +70,7 @@ class ChapterFragment : ViewStubFragment(),
         }
     }
 
-    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share)) }
+    private val options by lazy { arrayOf(getString(R.string.copy), getString(R.string.share), getString(R.string.share_as_image)) }
 
     private var _viewBinding: FragmentChapterBinding? = null
     private val viewBinding: FragmentChapterBinding get() = _viewBinding!!
@@ -180,6 +181,10 @@ class ChapterFragment : ViewStubFragment(),
             }
             options[1] -> {
                 share(requireContext(), viewModel.book, content)
+                dialogFragment.dismiss()
+            }
+            options[2] -> {
+                shareAsImage(requireContext(), viewModel.book, content)
                 dialogFragment.dismiss()
             }
         }
