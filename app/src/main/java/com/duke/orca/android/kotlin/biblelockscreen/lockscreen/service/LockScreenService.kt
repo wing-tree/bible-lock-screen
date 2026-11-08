@@ -31,8 +31,9 @@ class LockScreenService : Service() {
             }
 
             if (show) {
+                // 옵션이 꺼진 채 만들어진 화면이 남아 있으면 잠금화면 뒤에 가려지므로, 늘 새로 만든다.
                 Intent(context, MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(this)
                 }
             }
