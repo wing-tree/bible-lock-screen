@@ -1,7 +1,7 @@
 package com.duke.orca.android.kotlin.biblelockscreen.bible.views
 
+import androidx.core.os.BundleCompat
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Application
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Duration
@@ -14,7 +14,7 @@ class OptionChoiceDialogFragment : SingleChoiceDialogFragment<String>() {
         fun onOptionChoice(dialogFragment: DialogFragment, option: String, content: Content)
     }
 
-    private val content by lazy { arguments?.getParcelable<Content>(Key.CONTENT) }
+    private val content by lazy { arguments?.let { BundleCompat.getParcelable(it, Key.CONTENT, Content::class.java) } }
 
     private var onOptionChoiceListener: OnOptionChoiceListener? = null
 
@@ -51,10 +51,10 @@ class OptionChoiceDialogFragment : SingleChoiceDialogFragment<String>() {
 
         fun newInstance(items: Array<String>, content: Content): OptionChoiceDialogFragment {
             return OptionChoiceDialogFragment().apply {
-                arguments = bundleOf(
-                    Key.CONTENT to content,
-                    Key.ITEMS to items
-                )
+                arguments = Bundle().apply {
+                    putParcelable(Key.CONTENT, content)
+                    putStringArray(Key.ITEMS, items)
+                }
             }
         }
     }

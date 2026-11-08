@@ -10,6 +10,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.R
 import com.duke.orca.android.kotlin.biblelockscreen.base.LinearLayoutManagerWrapper
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.PreferenceFragment
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
+import com.duke.orca.android.kotlin.biblelockscreen.lockscreen.service.LockScreenService
 import com.duke.orca.android.kotlin.biblelockscreen.settings.adapters.PreferenceAdapter.AdapterItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,7 +42,6 @@ class LockScreenSettingsFragment : PreferenceFragment() {
         val displayAfterUnlocking = DataStore.LockScreen.getDisplayAfterUnlocking(requireContext())
         val showOnLockScreen = DataStore.LockScreen.getShowOnLockScreen(requireContext())
         val unlockWithBackKey = DataStore.LockScreen.getUnlockWithBackKey(requireContext())
-        // val swipeToTouch = DataStore.LockScreen.isSwipeOnTouch(requireContext())
 
         with(items) {
             add(
@@ -55,6 +55,12 @@ class LockScreenSettingsFragment : PreferenceFragment() {
                         lifecycleScope.launch {
                             withContext(Dispatchers.IO) {
                                 DataStore.LockScreen.putShowOnLockScreen(requireContext(), isChecked)
+                            }
+
+                            if (isChecked) {
+                                LockScreenService.start(requireContext())
+                            } else {
+                                LockScreenService.stop(requireContext())
                             }
 
                             with(items.toMutableList()) {
@@ -97,22 +103,6 @@ class LockScreenSettingsFragment : PreferenceFragment() {
                     body = getString(R.string.unlock_with_back_button)
                 )
             )
-
-//            add(
-//                AdapterItem.SwitchPreference(
-//                    drawable = ContextCompat.getDrawable(
-//                        requireContext(),
-//                        R.drawable.round_touch_app_24
-//                    ),
-//                    isChecked = swipeToTouch,
-//                    onCheckedChange = {
-//                        lifecycleScope.launch(Dispatchers.IO) {
-//                            DataStore.LockScreen.putSwipeOnTouch(requireContext(), it)
-//                        }
-//                    },
-//                    body = getString(R.string.unlock_with_back_button)
-//                )
-//            )
         }
 
         with(items.toMutableList()) {

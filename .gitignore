@@ -16,3 +16,11 @@ local.properties
 /app/src/main/assets
 /app/src/main/res/values/admob.xml
 /app/google-services.json
+
+*.jks
+keystore.properties
+
+# fastlane
+fastlane/play-service-account.json
+fastlane/report.xml
+fastlane/README.md

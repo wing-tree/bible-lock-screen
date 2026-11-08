@@ -1,5 +1,6 @@
 package com.duke.orca.android.kotlin.biblelockscreen.bible.views
 
+import androidx.core.os.BundleCompat
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -75,7 +76,7 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        arguments?.getParcelable<Content>(Key.CONTENT)?.let {
+        arguments?.let { BundleCompat.getParcelable(it, Key.CONTENT, Content::class.java) }?.let {
             setup(it.book, it.chapter, it.verse)
         } ?: run {
             runBlocking {
@@ -94,7 +95,7 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
         observe()
 
         setFragmentResultListener(RequestKey.HIGHLIGHTS_FRAGMENT) { _, bundle ->
-            val verse = bundle.getParcelable<Content>(Key.CONTENT)
+            val verse = BundleCompat.getParcelable(bundle, Key.CONTENT, Content::class.java)
 
             verse?.let {
                 clear()
@@ -103,7 +104,7 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
         }
 
         setFragmentResultListener(RequestKey.BOOKMARKS_FRAGMENT) { _, bundle ->
-            val verse = bundle.getParcelable<Content>(Key.CONTENT)
+            val verse = BundleCompat.getParcelable(bundle, Key.CONTENT, Content::class.java)
 
             verse?.let {
                 clear()
@@ -112,7 +113,7 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
         }
 
         setFragmentResultListener(RequestKey.FAVORITES_FRAGMENT) { _, bundle ->
-            val verse = bundle.getParcelable<Content>(Key.CONTENT)
+            val verse = BundleCompat.getParcelable(bundle, Key.CONTENT, Content::class.java)
 
             verse?.let {
                 clear()
@@ -268,7 +269,7 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
     private fun bind() {
         with(viewBinding) {
             toolbar.setNavigationOnClickListener {
-                requireActivity().onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
             }
 
             constraintLayoutTranslation.setOnClickListener {

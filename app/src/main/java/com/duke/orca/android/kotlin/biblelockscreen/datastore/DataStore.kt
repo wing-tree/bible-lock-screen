@@ -14,9 +14,13 @@ import com.duke.orca.android.kotlin.biblelockscreen.R
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Application
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.BLANK
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.serializers.RecentlyReadSerializer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.atomic.AtomicReference
 
 val Context.preferencesDataStore: DataStore<Preferences> by preferencesDataStore(name = "${Application.PACKAGE_NAME}.settings")
 val Context.recentlyReadDataStore: DataStore<RecentlyRead> by dataStore(
@@ -25,83 +29,62 @@ val Context.recentlyReadDataStore: DataStore<RecentlyRead> by dataStore(
 )
 
 object DataStore {
-    private fun getBoolean(context: Context, key: Preferences.Key<Boolean>, defValue: Boolean): Boolean = runBlocking {
-        context.preferencesDataStore.data.map {
-            it[key] ?: defValue
-        }.first()
-    }
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val cache = AtomicReference<Preferences?>(null)
 
-    fun getBooleanFlow(context: Context, key: Preferences.Key<Boolean>, defValue: Boolean) =
-        context.preferencesDataStore.data.map {
-            it[key] ?: defValue
-        }
+    // 메인 스레드에서 읽어도 막히지 않도록 Preferences 를 메모리에 들고 있는다.
+    fun init(context: Context) {
+        val applicationContext = context.applicationContext
 
-    private fun getInt(context: Context, key: Preferences.Key<Int>, defValue: Int): Int = runBlocking {
-        context.preferencesDataStore.data.map {
-            it[key] ?: defValue
-        }.first()
-    }
-
-    private fun getFloat(context: Context, key: Preferences.Key<Float>, defValue: Float): Float = runBlocking {
-        context.preferencesDataStore.data.map {
-            it[key] ?: defValue
-        }.first()
-    }
-
-    private fun getLong(context: Context, key: Preferences.Key<Long>, defValue: Long): Long = runBlocking {
-        context.preferencesDataStore.data.map {
-            it[key] ?: defValue
-        }.first()
-    }
-
-    private fun getString(context: Context, key: Preferences.Key<String>, defValue: String): String = runBlocking {
-        context.preferencesDataStore.data.map {
-            it[key] ?: defValue
-        }.first()
-    }
-
-    suspend fun putBoolean(context: Context, key: Preferences.Key<Boolean>, value: Boolean) {
-        context.preferencesDataStore.edit {
-            it[key] = value
+        scope.launch {
+            applicationContext.preferencesDataStore.data.collect { cache.set(it) }
         }
     }
 
-    suspend fun putInt(context: Context, key: Preferences.Key<Int>, value: Int) {
-        context.preferencesDataStore.edit {
-            it[key] = value
-        }
+    private fun preferences(context: Context): Preferences = cache.get() ?: runBlocking {
+        context.preferencesDataStore.data.first()
+    }.also { cache.compareAndSet(null, it) }
+
+    private fun <T> get(context: Context, key: Preferences.Key<T>, defValue: T): T =
+        preferences(context)[key] ?: defValue
+
+    private fun getBoolean(context: Context, key: Preferences.Key<Boolean>, defValue: Boolean) = get(context, key, defValue)
+
+    private fun getInt(context: Context, key: Preferences.Key<Int>, defValue: Int) = get(context, key, defValue)
+
+    private fun getFloat(context: Context, key: Preferences.Key<Float>, defValue: Float) = get(context, key, defValue)
+
+    private fun getString(context: Context, key: Preferences.Key<String>, defValue: String) = get(context, key, defValue)
+
+    private suspend fun <T> put(context: Context, key: Preferences.Key<T>, value: T) {
+        cache.set(context.preferencesDataStore.edit { it[key] = value })
     }
 
-    suspend fun putFloat(context: Context, key: Preferences.Key<Float>, value: Float) {
-        context.preferencesDataStore.edit {
-            it[key] = value
-        }
+    // 기다리지 않는 쓰기: 캐시를 먼저 바꿔 바로 다음 읽기에도 새 값이 보이게 한다.
+    private fun <T> putAsync(context: Context, key: Preferences.Key<T>, value: T) {
+        cache.set(preferences(context).toMutablePreferences().apply { this[key] = value })
+
+        val applicationContext = context.applicationContext
+
+        scope.launch { put(applicationContext, key, value) }
     }
 
-    suspend fun putLong(context: Context, key: Preferences.Key<Long>, value: Long) {
-        context.preferencesDataStore.edit {
-            it[key] = value
-        }
-    }
+    suspend fun putBoolean(context: Context, key: Preferences.Key<Boolean>, value: Boolean) = put(context, key, value)
 
-    suspend fun putString(context: Context, key: Preferences.Key<String>, value: String) {
-        context.preferencesDataStore.edit {
-            it[key] = value
-        }
-    }
+    suspend fun putInt(context: Context, key: Preferences.Key<Int>, value: Int) = put(context, key, value)
+
+    suspend fun putFloat(context: Context, key: Preferences.Key<Float>, value: Float) = put(context, key, value)
+
+    suspend fun putString(context: Context, key: Preferences.Key<String>, value: String) = put(context, key, value)
 
     fun isFirstTime(context: Context): Boolean = getBoolean(context, PreferencesKeys.isFirstTime, true)
 
-    fun putFirstTime(context: Context, value: Boolean) = runBlocking {
-        putBoolean(context, PreferencesKeys.isFirstTime, value)
-    }
+    fun putFirstTime(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.isFirstTime, value)
 
     object Verse {
         fun getCurrentVerse(context: Context) = getInt(context, PreferencesKeys.Verse.currentVerse, 0)
 
-        fun putCurrentVerse(context: Context, value: Int) = runBlocking {
-            putInt(context, PreferencesKeys.Verse.currentVerse, value)
-        }
+        fun putCurrentVerse(context: Context, value: Int) = putAsync(context, PreferencesKeys.Verse.currentVerse, value)
     }
 
     object Display {
@@ -116,9 +99,7 @@ object DataStore {
             return getBoolean(context, PreferencesKeys.Display.isDarkMode, defValue)
         }
 
-        fun putDarkMode(context: Context, value: Boolean) = runBlocking {
-            putBoolean(context, PreferencesKeys.Display.isDarkMode, value)
-        }
+        fun putDarkMode(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.Display.isDarkMode, value)
     }
 
     object Font {
@@ -164,18 +145,6 @@ object DataStore {
         fun getDisplayAfterUnlocking(context: Context) = getBoolean(context, PreferencesKeys.LockScreen.displayAfterUnlocking, false)
         fun getShowOnLockScreen(context: Context) = getBoolean(context, PreferencesKeys.LockScreen.showOnLockScreen, true)
         fun getUnlockWithBackKey(context: Context) = getBoolean(context, PreferencesKeys.LockScreen.unlockWithBackKey, true)
-//        fun isSwipeOnTouch(context: Context) = getBoolean(
-//            context = context,
-//            key = PreferencesKeys.LockScreen.swipeOnTouch,
-//            defValue = false,
-//        )
-//
-//        fun swipeOnTouchFlow(context: Context) = getBooleanFlow(
-//            context = context,
-//            key = PreferencesKeys.LockScreen.swipeOnTouch,
-//            defValue = false,
-//        )
-
         suspend fun putDisplayAfterUnlocking(context: Context, value: Boolean) {
             putBoolean(context, PreferencesKeys.LockScreen.displayAfterUnlocking, value)
         }
@@ -187,23 +156,15 @@ object DataStore {
         suspend fun putUnlockWithBackKey(context: Context, value: Boolean) {
             putBoolean(context, PreferencesKeys.LockScreen.unlockWithBackKey, value)
         }
-
-//        suspend fun putSwipeOnTouch(context: Context, value: Boolean) {
-//            putBoolean(context, PreferencesKeys.LockScreen.swipeOnTouch, value)
-//        }
     }
 
     object Translation {
         fun getFileName(context: Context): String = getString(context, PreferencesKeys.Translation.fileName, BLANK)
 
-        fun putFileName(context: Context, value: String) = runBlocking {
-            putString(context, PreferencesKeys.Translation.fileName, value)
-        }
+        fun putFileName(context: Context, value: String) = putAsync(context, PreferencesKeys.Translation.fileName, value)
 
         fun getSubFileName(context: Context): String = getString(context, PreferencesKeys.Translation.subFileName, BLANK)
 
-        fun putSubFileName(context: Context, value: String) = runBlocking {
-            putString(context, PreferencesKeys.Translation.subFileName, value)
-        }
+        fun putSubFileName(context: Context, value: String) = putAsync(context, PreferencesKeys.Translation.subFileName, value)
     }
 }

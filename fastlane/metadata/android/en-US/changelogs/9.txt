@@ -1,0 +1,4 @@
+- Removed all ads
+- Fixed the lock screen staying behind after swipe unlock
+- No longer covers the screen during phone calls
+- Fixed crashes and updated for the latest Android

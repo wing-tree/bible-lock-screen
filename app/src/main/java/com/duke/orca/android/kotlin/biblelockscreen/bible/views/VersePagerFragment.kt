@@ -10,17 +10,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat.END
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.transition.AutoTransition
-import androidx.transition.TransitionManager
 import androidx.viewpager2.widget.ViewPager2
-import com.duke.orca.android.kotlin.biblelockscreen.BuildConfig
 import com.duke.orca.android.kotlin.biblelockscreen.R
-import com.duke.orca.android.kotlin.biblelockscreen.admob.AdLoader
 import com.duke.orca.android.kotlin.biblelockscreen.application.*
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.*
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.BaseDialogFragment
@@ -32,20 +27,16 @@ import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Verse
 import com.duke.orca.android.kotlin.biblelockscreen.bible.pagetransformer.PageTransformer
 import com.duke.orca.android.kotlin.biblelockscreen.bible.unlock.UnlockController
 import com.duke.orca.android.kotlin.biblelockscreen.bible.viewmodels.VersePagerViewModel
-import com.duke.orca.android.kotlin.biblelockscreen.billing.model.Sku
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.FragmentVersePagerBinding
-import com.duke.orca.android.kotlin.biblelockscreen.databinding.NativeAdBinding
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
 import com.duke.orca.android.kotlin.biblelockscreen.devicecredential.DeviceCredential
 import com.duke.orca.android.kotlin.biblelockscreen.devicecredential.annotation.RequireDeviceCredential
-import com.duke.orca.android.kotlin.biblelockscreen.eventbus.BehaviourEventBus
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.Database
 import com.duke.orca.android.kotlin.biblelockscreen.review.Review
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.FontSettingsFragment
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.LockScreenSettingsFragment
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.SettingsFragment
 import com.duke.orca.android.kotlin.biblelockscreen.widget.DropdownMenu
-import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -55,8 +46,6 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.ref.WeakReference
-import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -84,16 +73,6 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
                     requireActivity().finish()
                 }
             }
-
-            override fun onRestored() {
-                if (nativeAd.notNull and nativeAdBinding.notNull) {
-                    viewBinding.nativeAd.root.apply {
-                        if (this.isVisible) {
-                            fade(1.0f, duration = Duration.MEDIUM)
-                        }
-                    }
-                }
-            }
         })
     }
 
@@ -101,16 +80,12 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
 
     private var currentVerse: Verse? = null
     private var currentPageMargin = 0.0f
-    private var nativeAd: NativeAd? = null
-    private var nativeAdBinding: NativeAdBinding? = null
-
-    private val adFreePeriod: Int
-        get() = if (BuildConfig.DEBUG) 1 else 7
 
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             viewModel.get(position)
+            updateArrows(position)
         }
     }
 
@@ -213,7 +188,6 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
 
     override fun onDestroyView() {
         DataStore.Verse.putCurrentVerse(requireContext(), viewBinding.viewPager2.currentItem)
-        nativeAd?.destroy()
         viewBinding.viewPreviousFake.viewTreeObserver.removeOnDrawListener(onDrawListener)
         viewBinding.viewPager2.unregisterOnPageChangeCallback(onPageChangeCallback)
         viewBinding.viewPager2.adapter = null
@@ -291,6 +265,14 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
             moveTo(book, chapter, position.inc())
         }
 
+        viewBinding.imageViewPrevious.setOnClickListener {
+            with(viewBinding.viewPager2) { setCurrentItem(currentItem.dec(), true) }
+        }
+
+        viewBinding.imageViewNext.setOnClickListener {
+            with(viewBinding.viewPager2) { setCurrentItem(currentItem.inc(), true) }
+        }
+
         setPageTransformer(PageMargin.medium, false)
 
         viewBinding.viewPager2.adapter = versePagerAdapter
@@ -358,20 +340,6 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
                 getBehaviourSubject(Key.DROPDOWN_MENU)?.onNext(Unit)
             }
         )
-
-        BehaviourEventBus.subscribe(Sku::class.java) {
-            when(it) {
-                is Sku.RemoveAds -> {
-                    if (it.isPurchased) {
-                        onAdsRemoved()
-                    } else {
-                        onAdsPending()
-                    }
-                }
-            }
-        }?.let {
-            compositeDisposable.add(it)
-        }
     }
 
     private fun launchFragmentContainerActivity(simpleName: String) {
@@ -381,6 +349,12 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
             getActivityResultLauncher(Key.FRAGMENT_CONTAINER)?.launch(it)
             overridePendingTransition(R.anim.slide_in_right, R.anim.z_adjustment_bottom)
         }
+    }
+
+    // 첫 구절·마지막 구절에서는 더 갈 곳이 없는 쪽 화살표를 숨긴다.
+    private fun updateArrows(position: Int) {
+        viewBinding.imageViewPrevious.visibility = if (position > 0) View.VISIBLE else View.INVISIBLE
+        viewBinding.imageViewNext.visibility = if (position < VERSE_COUNT.dec()) View.VISIBLE else View.INVISIBLE
     }
 
     private fun moveTo(book: Int, chapter: Int, verse: Int) {
@@ -432,76 +406,6 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
             })
 
             currentPageMargin = pageMargin
-        } catch (e: NullPointerException) {
-            Timber.e(e)
-        }
-    }
-
-    private fun populateNativeAdView() {
-        if (nativeAd.isNull) {
-            AdLoader.loadNativeAd(requireContext()) {
-                try {
-                    with(NativeAdBinding.bind(viewBinding.nativeAd.root)) {
-                        nativeAd = it
-                        nativeAdBinding = NativeAdBinding.bind(viewBinding.nativeAd.root)
-                        AdLoader.populateNativeAdView(WeakReference(this), it)
-                    }
-
-                    showNativeAdView()
-                } catch (e: NullPointerException) {
-                    Timber.e(e)
-                }
-            }
-        }
-    }
-
-    private fun showNativeAdView() {
-        try {
-            nativeAdBinding?.let {
-                viewBinding.nativeAd.root.alpha = 1.0f
-                TransitionManager.beginDelayedTransition(
-                    viewBinding.constraintLayoutUnlock,
-                    AutoTransition()
-                )
-                it.root.show()
-            }
-        } catch (e: NullPointerException) {
-            Timber.e(e)
-            viewBinding.imageViewMenu.enable()
-        }
-    }
-
-    private fun hideNativeAdView() {
-        try {
-            nativeAdBinding?.let {
-                TransitionManager.beginDelayedTransition(
-                    viewBinding.constraintLayoutUnlock,
-                    AutoTransition()
-                )
-                it.root.hide()
-            }
-
-            nativeAdBinding = null
-        } catch (e: NullPointerException) {
-            Timber.e(e)
-            viewBinding.imageViewMenu.enable()
-        }
-    }
-
-    private fun onAdsPending() {
-        val firstInstallTime = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).firstInstallTime
-        val days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - firstInstallTime)
-
-        if (days > adFreePeriod) {
-            populateNativeAdView()
-        }
-    }
-
-    private fun onAdsRemoved() {
-        try {
-            nativeAd?.destroy()
-            nativeAd = null
-            hideNativeAdView()
         } catch (e: NullPointerException) {
             Timber.e(e)
         }

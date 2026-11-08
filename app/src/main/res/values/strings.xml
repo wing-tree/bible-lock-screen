@@ -59,8 +59,6 @@
         com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior
     </string>
 
-    <string name="blind_screen_000">Due to security policy, it cannot be unlocked with the Home button.</string>
-
     <string name="format_bible_chapter" translatable="false">%s&#160;&#160;%d : %d</string>
 
     <string name="fragment_permission_rationale_dialog_000">To use all features of the app, you must allow the following permissions.</string>
@@ -70,4 +68,6 @@
     <string name="pattern_format_12_hour_000">EEE, MMMM d</string>
     <string name="pattern_format_12_hour_001">h:mm</string>
     <string name="pattern_format_12_hour_002">h:mm:ss</string>
+    <string name="previous_verse">Previous verse</string>
+    <string name="next_verse">Next verse</string>
 </resources>

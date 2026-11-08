@@ -13,9 +13,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.application.setTextWithSearc
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Bible
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.BookItemBinding
-import com.duke.orca.android.kotlin.biblelockscreen.databinding.NativeAdBinding
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.VerseItemBinding
-import com.google.android.gms.ads.nativead.NativeAd
 import com.like.LikeButton
 import com.like.OnLikeListener
 
@@ -128,8 +126,6 @@ class VerseAdapter(
                         }
                     }
                 }
-                is AdapterItem.NativeAdItem -> {
-                }
             }
         }
     }
@@ -148,7 +144,6 @@ class VerseAdapter(
     override fun getItemViewType(position: Int): Int {
         return when(getItem(position)) {
             is AdapterItem.Book -> ViewType.BOOK
-            is AdapterItem.NativeAdItem -> ViewType.NATIVE_AD
             is AdapterItem.Verse -> ViewType.VERSE
         }
     }
@@ -160,7 +155,6 @@ class VerseAdapter(
         val viewBinding = when(viewType) {
             ViewType.BOOK -> BookItemBinding.inflate(inflater, parent, false)
             ViewType.VERSE -> VerseItemBinding.inflate(inflater, parent, false)
-            ViewType.NATIVE_AD -> NativeAdBinding.inflate(inflater, parent, false)
             else -> throw IllegalArgumentException("IllegalArgumentException :$viewType")
         }
 
@@ -175,7 +169,6 @@ class VerseAdapter(
         private object ViewType {
             const val BOOK = 0
             const val VERSE = 1
-            const val NATIVE_AD = 2
         }
     }
 
@@ -213,10 +206,5 @@ class VerseAdapter(
                     word = word
                 )
         }
-
-        data class NativeAdItem(
-            override val id: Int,
-            val nativeAd: NativeAd
-        ) : AdapterItem()
     }
 }

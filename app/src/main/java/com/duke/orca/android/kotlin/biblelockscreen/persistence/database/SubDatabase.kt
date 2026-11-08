@@ -18,7 +18,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.persistence.typeconverters.T
 
 @androidx.room.Database(
     entities = [Bible::class, Position::class, Verse::class],
-    exportSchema = false,
+    exportSchema = true,
     version = 4
 )
 @androidx.room.TypeConverters(TypeConverters::class)
@@ -49,7 +49,6 @@ abstract class SubDatabase: RoomDatabase() {
         fun refresh(context: Context) {
             synchronized(this) {
                 clear()
-                context.applicationContext.cacheDir.deleteRecursively()
                 INSTANCE = getBuilder(context)?.build()
             }
         }
@@ -79,7 +78,6 @@ abstract class SubDatabase: RoomDatabase() {
                 .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 .allowMainThreadQueries()
                 .createFromAsset("$subFileName.db")
-                .fallbackToDestructiveMigration()
         }
     }
 }

@@ -82,6 +82,7 @@ class FragmentContainerActivity : BaseLockScreenActivity() {
     @CallSuper
     override fun finish() {
         super.finish()
+        @Suppress("DEPRECATION")
         overridePendingTransition(R.anim.z_adjustment_bottom, R.anim.slide_out_right)
     }
 
@@ -94,7 +95,10 @@ class FragmentContainerActivity : BaseLockScreenActivity() {
             HighlightsFragment::class.java.simpleName -> HighlightsFragment()
             LockScreenSettingsFragment::class.java.simpleName -> LockScreenSettingsFragment()
             SettingsFragment::class.java.simpleName -> SettingsFragment()
-            else -> throw IllegalArgumentException()
+            else -> {
+                finish()
+                return
+            }
         }
 
         supportFragmentManager.beginTransaction()

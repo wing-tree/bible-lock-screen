@@ -45,7 +45,7 @@ class FavoritesFragment : BaseFragment<FragmentFavoritesBinding>(),
             if (fragmentResultSetRequired) {
                 setFragmentResult(
                     RequestKey.HIGHLIGHTS_FRAGMENT,
-                    bundleOf(Key.CONTENT to it.content)
+                    Bundle().apply { putParcelable(Key.CONTENT, it.content) }
                 )
 
                 parentFragmentManager.popBackStackImmediate()

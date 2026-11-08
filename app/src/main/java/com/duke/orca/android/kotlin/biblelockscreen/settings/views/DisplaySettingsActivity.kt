@@ -37,8 +37,9 @@ class DisplaySettingsActivity : BaseLockScreenActivity() {
         bind()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
+    override fun finish() {
+        super.finish()
+        @Suppress("DEPRECATION")
         overridePendingTransition(R.anim.z_adjustment_bottom, R.anim.slide_out_right)
     }
 
@@ -73,7 +74,7 @@ class DisplaySettingsActivity : BaseLockScreenActivity() {
             setTitle(R.string.display)
 
             setNavigationOnClickListener {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
             }
         }
 

@@ -1,0 +1,52 @@
+default_platform(:android)
+
+platform :android do
+  # 업로드 키(keystore.properties)가 없으면 서명 안 된 AAB 가 나와 Play 가 받지 않으므로 미리 막는다.
+  desc "release AAB 를 빌드한다"
+  lane :build do
+    UI.user_error!("keystore.properties 가 없습니다. 업로드 키를 먼저 준비하세요.") unless File.exist?(File.expand_path("../keystore.properties", __dir__))
+    gradle(task: ":app:bundleRelease")
+  end
+
+  # track: internal / alpha(비공개) / beta(공개) / production
+  # status: completed(바로 출시) / draft(콘솔에서 직접 출시)
+  desc "AAB 와 출시 노트를 올린다. 예) fastlane upload track:production status:draft"
+  lane :upload do |options|
+    build
+    upload_to_play_store(
+      track: options[:track] || "internal",
+      release_status: options[:status] || "draft",
+      aab: Dir["app/build/outputs/bundle/release/*.aab"].first,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  # production 트랙에 출시가 여럿(초안 등) 있으면 어느 것인지 골라야 해서, 가장 높은 버전 코드를 넘긴다.
+  def live_version_code
+    google_play_track_version_codes(track: "production").max
+  end
+
+  desc "metadata/android 의 제목·설명·아이콘·스크린샷만 올린다"
+  lane :metadata do
+    upload_to_play_store(
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_changelogs: true,
+      version_code: live_version_code
+    )
+  end
+
+  desc "실제로 반영하지 않고 메타데이터만 검증한다"
+  lane :validate do
+    upload_to_play_store(
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_changelogs: true,
+      version_code: live_version_code,
+      validate_only: true
+    )
+  end
+end

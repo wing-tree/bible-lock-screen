@@ -19,7 +19,8 @@ object DeviceCredential {
     fun requireUnlock(context: Context): Boolean {
         val keyguardManager = context.getSystemService(KEYGUARD_SERVICE) as KeyguardManager
 
-        return keyguardManager.isDeviceLocked
+        // 밀어서 잠금(보안 없는 잠금)도 함께 풀어야 시스템 잠금화면이 뒤에 남지 않는다.
+        return keyguardManager.isKeyguardLocked
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

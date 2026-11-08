@@ -34,7 +34,7 @@ class PermissionAdapter(private val items: List<Permission>): RecyclerView.Adapt
                 binding.textViewPermission.setTypeface(null, Typeface.NORMAL)
             }
 
-            if (adapterPosition == items.count().dec()) {
+            if (bindingAdapterPosition == items.count().dec()) {
                 binding.viewDivider.hide()
             } else {
                 binding.viewDivider.show()

@@ -1,26 +1,42 @@
 plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
-    id 'dagger.hilt.android.plugin'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'kotlin-parcelize'
-    id 'androidx.navigation.safeargs.kotlin'
-    id "com.google.protobuf" version '0.9.0'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.google.dagger.hilt.android)
+    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.google.firebase.crashlytics)
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.jetbrains.kotlin.plugin.parcelize)
+}
+
+// 릴리스 서명 정보는 루트의 keystore.properties(gitignore) 에 둔다.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
 }
 
 android {
-    compileSdk 35
+    namespace 'com.duke.orca.android.kotlin.biblelockscreen'
+    compileSdk 37
 
     defaultConfig {
         applicationId "com.duke.orca.android.kotlin.biblelockscreen"
         minSdk 26
-        targetSdk 35
-        versionCode 8
-        versionName "2.1.2"
-        setProperty("archivesBaseName", "the-bible-in-you" + "-" + versionCode + "-(" + versionName + ")")
+        targetSdk 36
+        versionCode 10
+        versionName "2.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            release {
+                storeFile rootProject.file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+            }
+        }
     }
 
     buildTypes {
@@ -28,107 +44,92 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
         }
-
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+    // 번역별 성경 DB(gitignore). createFromAsset 으로 복사해 쓴다.
+    sourceSets {
+        main {
+            assets.srcDirs += 'assets'
         }
+    }
+    androidResources {
+        ignoreAssetsPattern '*.db-shm:*.db-wal'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = '17'
-        freeCompilerArgs += [
-                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xuse-experimental=kotlinx.coroutines.ObsoleteCoroutinesApi"
-        ]
-    }
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
-    lintOptions {
-        disable 'ClickableViewAccessibility'
-        disable 'SpUsage'
-        disable 'RtlHardcoded'
+    lint {
+        disable 'ClickableViewAccessibility', 'SpUsage', 'RtlHardcoded'
     }
-    namespace 'com.duke.orca.android.kotlin.biblelockscreen'
+}
+
+base {
+    archivesName = "the-bible-in-you-${android.defaultConfig.versionCode}-(${android.defaultConfig.versionName})"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        optIn.add("kotlinx.coroutines.ExperimentalCoroutinesApi")
+        optIn.add("kotlinx.coroutines.FlowPreview")
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    implementation libs.androidx.activity.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.datastore
+    implementation libs.androidx.datastore.preferences
+    implementation libs.androidx.fragment.ktx
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.lifecycle.viewmodel.savedstate
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.androidx.room.ktx
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.rxjava3
+    ksp libs.androidx.room.compiler
 
-    implementation 'androidx.core:core-ktx:1.15.0'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-    testImplementation 'junit:junit:4.13.2'
+    implementation libs.google.android.material
+    implementation libs.google.android.play.review.ktx
+    implementation libs.google.code.gson
+    implementation libs.google.dagger.hilt.android
+    ksp libs.google.dagger.hilt.compiler
+    implementation platform(libs.google.firebase.bom)
+    implementation libs.google.firebase.analytics
+    implementation libs.google.firebase.crashlytics
+    implementation libs.google.protobuf.javalite
 
-    implementation "androidx.datastore:datastore:1.1.1"
-    implementation "androidx.datastore:datastore-preferences:1.1.1"
-    implementation 'androidx.fragment:fragment-ktx:1.8.5'
+    implementation libs.github.jd.alexander.likebutton
+    implementation libs.github.wing.tree.rolling.text.view
+    implementation libs.jakewharton.timber
+    implementation libs.reactivex.rxjava3.rxandroid
+    implementation libs.reactivex.rxjava3.rxjava
 
-    implementation 'com.google.android.gms:play-services-ads:23.5.0'
-    implementation("com.google.android.play:review-ktx:2.0.2")
-
-    implementation "com.google.dagger:hilt-android:2.51.1"
-    kapt "com.google.dagger:hilt-android-compiler:2.51.1"
-    kapt "androidx.hilt:hilt-compiler:1.2.0"
-
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.8.7"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7"
-
-    implementation "androidx.navigation:navigation-fragment-ktx:2.8.4"
-    implementation "androidx.navigation:navigation-ui-ktx:2.8.4"
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.8.4"
-
-    implementation "androidx.room:room-runtime:2.6.1"
-    implementation "androidx.room:room-ktx:2.6.1"
-    implementation 'androidx.room:room-rxjava3:2.6.1'
-
-    kapt "android.arch.persistence.room:compiler:1.1.1"
-    kapt "androidx.room:room-compiler:2.6.1"
-    kapt "androidx.room:room-ktx:2.6.1"
-
-    implementation 'android.arch.persistence.room:rxjava2:1.1.1'
-
-    implementation 'androidx.work:work-runtime-ktx:2.10.0'
-
-    implementation "com.android.billingclient:billing-ktx:7.1.1"
-
-    implementation 'com.github.jd-alexander:LikeButton:0.2.3'
-    implementation 'com.jakewharton.timber:timber:5.0.1'
-    implementation 'com.karumi:dexter:6.2.2'
-
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-
-    implementation platform('com.google.firebase:firebase-bom:33.6.0')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.1'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-
-    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
-
-    implementation 'com.google.code.gson:gson:2.11.0'
-
-    implementation 'com.google.protobuf:protobuf-javalite:4.0.0-rc-2'
-
-    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
-
-    implementation 'com.github.wing-tree:rolling-text-view:1.0.2'
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.espresso.core
+    androidTestImplementation libs.androidx.test.ext.junit
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:4.0.0-rc-2:osx-x86_64'
+        artifact = libs.google.protobuf.protoc.get().toString()
     }
 
     generateProtoTasks {
@@ -140,8 +141,4 @@ protobuf {
             }
         }
     }
-}
-
-kapt {
-    correctErrorTypes true
 }

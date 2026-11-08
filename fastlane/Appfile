@@ -1,0 +1,4 @@
+# Play 업로드용 서비스 계정 키. wind.orca.pe@gmail.com 개발자 계정의 Play Console 에 초대한 서비스 계정을 쓴다(고등어 키우기와 같은 키).
+# 키는 저장소에 두지 않는다(.gitignore). 기본 경로 fastlane/play-service-account.json 에 두거나, 다른 곳이면 PLAY_JSON_KEY 로 경로를 넘긴다.
+json_key_file(ENV["PLAY_JSON_KEY"] || File.expand_path("play-service-account.json", __dir__))
+package_name("com.duke.orca.android.kotlin.biblelockscreen")

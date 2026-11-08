@@ -41,7 +41,7 @@ class SingleStringChoiceDialogFragment : SingleChoiceDialogFragment<String>() {
 
         fun newInstance(items: Array<String>): SingleStringChoiceDialogFragment {
             return SingleStringChoiceDialogFragment().apply {
-                arguments = bundleOf(Key.ITEMS to items)
+                arguments = Bundle().apply { putStringArray(Key.ITEMS, items) }
             }
         }
     }

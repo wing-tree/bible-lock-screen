@@ -18,7 +18,6 @@ class UnlockController(
     private val callback: Callback
 ) {
     interface Callback {
-        fun onRestored()
         fun onOutOfRanged()
     }
 
@@ -73,7 +72,6 @@ class UnlockController(
     private fun setAlpha(alpha: Float) {
         viewBinding.imageViewUnlock.alpha = alpha
         viewBinding.linearLayout.alpha = alpha
-        viewBinding.nativeAd.root.alpha = alpha
         viewBinding.viewPreviousFake.alpha = alpha
         viewBinding.viewNextFake.alpha = alpha
     }
@@ -93,8 +91,6 @@ class UnlockController(
         viewBinding.viewNextFake.translateX(0.0f, duration = Duration.MEDIUM) {
             enableUserInput()
         }
-
-        callback.onRestored()
     }
 
     private fun disableUserInput() {

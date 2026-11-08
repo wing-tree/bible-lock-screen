@@ -69,7 +69,7 @@ abstract class BaseFragment<VB: ViewBinding> : Fragment() {
         viewBinding = inflate(inflater, container)
 
         toolbar?.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         return viewBinding.root
@@ -77,7 +77,7 @@ abstract class BaseFragment<VB: ViewBinding> : Fragment() {
 
     @CallSuper
     override fun onDestroyView() {
-        compositeDisposable.dispose()
+        compositeDisposable.clear()
         super.onDestroyView()
     }
 
@@ -118,6 +118,7 @@ abstract class BaseFragment<VB: ViewBinding> : Fragment() {
         requireActivity().finish()
     }
 
+    @Suppress("DEPRECATION")
     protected fun overridePendingTransition(enterAnim: Int, exitAnim: Int) {
         requireActivity().overridePendingTransition(enterAnim, exitAnim)
     }

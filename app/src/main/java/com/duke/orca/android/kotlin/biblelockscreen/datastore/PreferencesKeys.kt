@@ -42,7 +42,6 @@ object PreferencesKeys {
         val displayAfterUnlocking = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.displayAfterUnlocking")
         val showOnLockScreen = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.showOnLockScreen")
         val unlockWithBackKey = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.unlockWithBackKey")
-        val swipeOnTouch = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.swipe.on.touch")
     }
 
     object Translation {

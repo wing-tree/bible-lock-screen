@@ -56,8 +56,6 @@
     <string name="version">버전</string>
     <string name="write_review">리뷰 쓰기</string>
 
-    <string name="blind_screen_000">보안정책에 따라 홈 버튼으로 잠금 해제할 수 없습니다.</string>
-
     <string name="fragment_permission_rationale_dialog_000">앱의 모든 기능을 사용하려면 다음 권한을 허용해야 합니다.</string>
 
     <string name="review_000">소중한 리뷰 감사합니다.</string>
@@ -65,4 +63,6 @@
     <string name="pattern_format_12_hour_000">M월 d일 EEEE</string>
     <string name="pattern_format_12_hour_001">h:mm</string>
     <string name="pattern_format_12_hour_002">h:mm:ss</string>
+    <string name="previous_verse">이전 구절</string>
+    <string name="next_verse">다음 구절</string>
 </resources>

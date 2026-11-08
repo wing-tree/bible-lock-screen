@@ -280,6 +280,39 @@
                     app:layout_constraintTop_toBottomOf="@+id/constraint_layout_dropdown_menu"
                     tools:visibility="visible" />
 
+                <!-- 밀지 않고도 앞뒤 구절로 넘기는 버튼 -->
+                <ImageView
+                    android:id="@+id/image_view_previous"
+                    style="@style/SelectableItemBackgroundBorderless"
+                    android:layout_width="@dimen/width_36dp"
+                    android:layout_height="@dimen/height_36dp"
+                    android:layout_marginStart="@dimen/margin_4dp"
+                    android:background="@drawable/oval"
+                    android:backgroundTint="#40000000"
+                    android:contentDescription="@string/previous_verse"
+                    android:padding="@dimen/padding_8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/view_pager2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/view_pager2"
+                    app:srcCompat="@drawable/ic_round_chevron_left_24"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:id="@+id/image_view_next"
+                    style="@style/SelectableItemBackgroundBorderless"
+                    android:layout_width="@dimen/width_36dp"
+                    android:layout_height="@dimen/height_36dp"
+                    android:layout_marginEnd="@dimen/margin_4dp"
+                    android:background="@drawable/oval"
+                    android:backgroundTint="#40000000"
+                    android:contentDescription="@string/next_verse"
+                    android:padding="@dimen/padding_8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/view_pager2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/view_pager2"
+                    app:srcCompat="@drawable/ic_round_chevron_right_24"
+                    app:tint="@color/white" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
@@ -297,19 +330,6 @@
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.2">
 
-            <include
-                layout="@layout/native_ad"
-                android:id="@+id/native_ad"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/height_48dp"
-                android:layout_marginEnd="@dimen/margin_16dp"
-                android:layout_marginStart="@dimen/margin_16dp"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:visibility="visible"/>
-
             <FrameLayout
                 style="@style/SelectableItemBackgroundBorderless"
                 android:id="@+id/frame_layout_unlock"
@@ -320,7 +340,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/native_ad"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="UselessParent">
 
                 <ImageView

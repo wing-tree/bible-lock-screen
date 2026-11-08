@@ -44,7 +44,7 @@ class PreferenceAdapter: ListAdapter<PreferenceAdapter.AdapterItem, PreferenceAd
                             adapterItem.onClick.invoke(adapterItem)
                         }
 
-                        if (isAboveSpace(adapterPosition)) {
+                        if (isAboveSpace(bindingAdapterPosition)) {
                             viewBinding.viewDivider.hide()
                         } else {
                             viewBinding.viewDivider.show()

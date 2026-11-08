@@ -13,6 +13,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
+        DataStore.init(this)
 
         with(DataStore.Display.isDarkMode(this)) {
             AppCompatDelegate.setDefaultNightMode(

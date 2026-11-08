@@ -62,7 +62,7 @@ class BookmarksFragment : BaseFragment<FragmentBookmarksBinding>(),
         if (fragmentResultSetRequired) {
             setFragmentResult(
                 RequestKey.HIGHLIGHTS_FRAGMENT,
-                bundleOf(Key.CONTENT to content)
+                Bundle().apply { putParcelable(Key.CONTENT, content) }
             )
 
             parentFragmentManager.popBackStackImmediate()

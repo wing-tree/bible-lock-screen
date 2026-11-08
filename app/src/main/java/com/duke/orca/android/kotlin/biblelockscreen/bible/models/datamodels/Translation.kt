@@ -93,11 +93,7 @@ object Translation {
     }
 
     fun getFileNameInLanguage(context: Context): String {
-        val language = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.resources.configuration.locales.get(0).language
-        } else {
-            context.resources.configuration.locale.language
-        }
+        val language = context.resources.configuration.locales.get(0).language
 
         return when (language) {
             Language.ENGLISH -> FileName.KING_JAMES_VERSION
@@ -137,11 +133,7 @@ object Translation {
     }
 
     private fun getDisplayNameInLanguage(context: Context): String {
-        val language = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.resources.configuration.locales.get(0).language
-        } else {
-            context.resources.configuration.locale.language
-        }
+        val language = context.resources.configuration.locales.get(0).language
 
         return when (language) {
             Language.ENGLISH -> Name.KING_JAMES_VERSION
