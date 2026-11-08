@@ -1,0 +1,4 @@
+- Added French (Louis Segond) and German (Luther 1912) translations
+- Accented letters now display in the same font
+- German book names (1. Mose, Römer ...)
+- Faster verse loading
