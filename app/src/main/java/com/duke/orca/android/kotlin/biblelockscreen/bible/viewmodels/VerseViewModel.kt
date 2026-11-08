@@ -28,6 +28,9 @@ class VerseViewModel @Inject constructor(
     private val verse = MutableLiveData<Verse>()
     private val subVerse = MutableLiveData<Verse>()
 
+    // 지금 지켜보는 대조 번역 구절. 즐겨찾기 등으로 구절이 다시 올 때마다 감시를 겹쳐 걸지 않는다.
+    private var subVersePosition: Triple<Int, Int, Int>? = null
+
     val bible by lazy { bookRepository.get() }
     val subBible by lazy { subBookRepository?.get() }
     val triple = MediatorLiveData<Triple<Verse, Verse?, Font>?>().apply {
@@ -68,6 +71,9 @@ class VerseViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             verseRepository.get(id).flowOn(Dispatchers.IO).collect {
                 it?.let {
+                    // 화면에서 책 이름을 읽을 때 메인 스레드에서 쿼리하지 않도록 여기서 먼저 읽어 둔다.
+                    bible
+                    subBible
                     verse.postValue(it)
                     loadSubVerse(it.book, it.chapter, it.verse)
                 }
@@ -77,6 +83,12 @@ class VerseViewModel @Inject constructor(
     }
 
     fun loadSubVerse(book: Int, chapter: Int, verse: Int) {
+        val position = Triple(book, chapter, verse)
+
+        if (subVersePosition == position) return
+
+        subVersePosition = position
+
         viewModelScope.launch(Dispatchers.IO) {
             subVerseRepository?.get(book, chapter, verse)?.flowOn(Dispatchers.IO)?.collect {
                 subVerse.postValue(it)
