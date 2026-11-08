@@ -28,6 +28,11 @@ jetbrains-kotlin = "2.4.21"
 junit = "4.13.2"
 reactivex-rxjava3-rxandroid = "3.0.2"
 reactivex-rxjava3-rxjava = "3.1.12"
+unity3d-ads-mediation-applovin-adapter = "5.10.0"
+unity3d-ads-mediation-facebook-adapter = "5.6.0"
+unity3d-ads-mediation-sdk = "9.7.0"
+unity3d-ads-mediation-unityads-adapter = "5.15.0"
+unity3d-ads-unity-ads = "4.21.0"
 
 [libraries]
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
@@ -65,6 +70,11 @@ jakewharton-timber = { group = "com.jakewharton.timber", name = "timber", versio
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 reactivex-rxjava3-rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "reactivex-rxjava3-rxandroid" }
 reactivex-rxjava3-rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "reactivex-rxjava3-rxjava" }
+unity3d-ads-mediation-applovin-adapter = { group = "com.unity3d.ads-mediation", name = "applovin-adapter", version.ref = "unity3d-ads-mediation-applovin-adapter" }
+unity3d-ads-mediation-facebook-adapter = { group = "com.unity3d.ads-mediation", name = "facebook-adapter", version.ref = "unity3d-ads-mediation-facebook-adapter" }
+unity3d-ads-mediation-sdk = { group = "com.unity3d.ads-mediation", name = "mediation-sdk", version.ref = "unity3d-ads-mediation-sdk" }
+unity3d-ads-mediation-unityads-adapter = { group = "com.unity3d.ads-mediation", name = "unityads-adapter", version.ref = "unity3d-ads-mediation-unityads-adapter" }
+unity3d-ads-unity-ads = { group = "com.unity3d.ads", name = "unity-ads", version.ref = "unity3d-ads-unity-ads" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-application" }

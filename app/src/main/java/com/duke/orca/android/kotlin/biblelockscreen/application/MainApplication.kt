@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.duke.orca.android.kotlin.biblelockscreen.BuildConfig
+import com.duke.orca.android.kotlin.biblelockscreen.ad.NativeAds
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -28,6 +29,8 @@ class MainApplication : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+
+        NativeAds.init(this)
     }
 
     companion object {

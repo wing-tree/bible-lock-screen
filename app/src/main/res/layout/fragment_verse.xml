@@ -184,6 +184,13 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <!-- 가끔 섞이는 네이티브 광고 자리 -->
+    <FrameLayout
+        android:id="@+id/frame_layout_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/linear_layout_options"
         android:layout_width="match_parent"

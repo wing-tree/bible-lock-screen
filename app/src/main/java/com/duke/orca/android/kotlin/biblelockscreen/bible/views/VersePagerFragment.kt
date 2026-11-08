@@ -16,6 +16,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.duke.orca.android.kotlin.biblelockscreen.R
+import com.duke.orca.android.kotlin.biblelockscreen.ad.NativeAds
 import com.duke.orca.android.kotlin.biblelockscreen.application.*
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.*
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.BaseDialogFragment
@@ -86,6 +87,29 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
             super.onPageSelected(position)
             viewModel.get(position)
             updateArrows(position)
+            placeAd(position)
+        }
+    }
+
+    private var lastPosition = -1
+
+    // 넘긴 방향의 다음 카드(아직 안 보이는 카드)에 광고를 붙여, 넘기는 중에 갑자기 생기지 않게 한다.
+    // 처음 보이는 카드는 세지 않는다.
+    private fun placeAd(position: Int) {
+        val previous = lastPosition
+
+        lastPosition = position
+
+        if (previous < 0 || previous == position) return
+
+        NativeAds.onSwiped()
+
+        val next = if (position > previous) position.inc() else position.dec()
+        val fragment = childFragmentManager.findFragmentByTag("f$next") as? VerseFragment ?: return
+        val nativeAd = NativeAds.take() ?: return
+
+        if (fragment.showAd(nativeAd).not()) {
+            NativeAds.giveBack(nativeAd)
         }
     }
 

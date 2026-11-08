@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">그대 안의 성경</string>
 
-    <string name="ad">Ad</string>
+    <string name="ad">광고</string>
     <string name="align_center">가운데 정렬</string>
     <string name="align_left">왼쪽 정렬</string>
     <string name="align_right">오른쪽 정렬</string>

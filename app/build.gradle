@@ -121,6 +121,11 @@ dependencies {
     implementation libs.jakewharton.timber
     implementation libs.reactivex.rxjava3.rxandroid
     implementation libs.reactivex.rxjava3.rxjava
+    implementation libs.unity3d.ads.mediation.applovin.adapter
+    implementation libs.unity3d.ads.mediation.facebook.adapter
+    implementation libs.unity3d.ads.mediation.sdk
+    implementation libs.unity3d.ads.mediation.unityads.adapter
+    implementation libs.unity3d.ads.unity.ads
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.espresso.core

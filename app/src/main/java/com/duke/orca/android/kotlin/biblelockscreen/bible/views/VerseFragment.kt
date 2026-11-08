@@ -7,9 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.duke.orca.android.kotlin.biblelockscreen.R
+import com.duke.orca.android.kotlin.biblelockscreen.ad.NativeAds
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Application
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.BLANK
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Duration
@@ -25,6 +28,8 @@ import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Verse
 import com.duke.orca.android.kotlin.biblelockscreen.bible.share
 import com.duke.orca.android.kotlin.biblelockscreen.bible.viewmodels.VerseViewModel
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.FragmentVerseBinding
+import com.duke.orca.android.kotlin.biblelockscreen.databinding.NativeAdVerseBinding
+import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAd
 import com.like.LikeButton
 import com.like.OnLikeListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +43,7 @@ class VerseFragment : BaseFragment<FragmentVerseBinding>(),
     private val onResumed = AtomicBoolean(false)
 
     private var currentFont: Font? = null
+    private var nativeAd: LevelPlayNativeAd? = null
 
     override fun inflate(
         inflater: LayoutInflater,
@@ -177,6 +183,56 @@ class VerseFragment : BaseFragment<FragmentVerseBinding>(),
                 }
             }
         }
+    }
+
+    // 구절 아래 빈자리에 광고가 들어갈 때만 붙인다. 구절이 길어 자리가 없으면 false 를 돌려 다음 카드로 미룬다.
+    fun showAd(nativeAd: LevelPlayNativeAd): Boolean {
+        val binding = viewBinding
+
+        if (this.nativeAd != null || binding.nestedScrollView.isNotVisible) return false
+
+        val adBinding = NativeAdVerseBinding.inflate(layoutInflater, binding.frameLayoutAd, false)
+
+        adBinding.textViewAdTitle.text = nativeAd.title ?: nativeAd.advertiser
+        adBinding.textViewAdBody.text = nativeAd.body
+        adBinding.textViewAdCallToAction.text = nativeAd.callToAction
+        adBinding.textViewAdCallToAction.isVisible = nativeAd.callToAction.isNullOrBlank().not()
+        adBinding.imageViewAdIcon.setImageDrawable(nativeAd.icon?.drawable)
+        adBinding.imageViewAdIcon.isVisible = nativeAd.icon?.drawable != null
+
+        val widthSpec = View.MeasureSpec.makeMeasureSpec(binding.root.width, View.MeasureSpec.EXACTLY)
+        val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+
+        adBinding.root.measure(widthSpec, heightSpec)
+
+        val content = binding.nestedScrollView.getChildAt(0) as ViewGroup
+        val contentHeight = content.children
+            .filter { it.isVisible }
+            .maxOfOrNull { it.bottom + (it.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin } ?: 0
+        val adHeight = adBinding.root.measuredHeight +
+                (adBinding.root.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+
+        if (contentHeight + adHeight > binding.nestedScrollView.height) return false
+
+        with(adBinding.root) {
+            setTitleView(adBinding.textViewAdTitle)
+            setBodyView(adBinding.textViewAdBody)
+            setCallToActionView(adBinding.textViewAdCallToAction)
+            setIconView(adBinding.imageViewAdIcon)
+            registerNativeAdViews(nativeAd)
+        }
+
+        binding.frameLayoutAd.addView(adBinding.root)
+        binding.frameLayoutAd.show()
+        this.nativeAd = nativeAd
+
+        return true
+    }
+
+    override fun onDestroyView() {
+        nativeAd?.let { NativeAds.giveBack(it) }
+        nativeAd = null
+        super.onDestroyView()
     }
 
     private fun addToFavorites(id: Int) {
