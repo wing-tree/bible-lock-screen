@@ -1,21 +1,37 @@
-Lock screen
-Every time you turn on your smartphone, you can see the Word of God.
-You can turn the feature displayed on the lock screen on or off at any time. :)
+God's Word, every time you turn on your phone.
+The Bible in You shows a Bible verse on your lock screen, so the moments you pick up your phone become moments of reflection on Scripture.
 
-Bible
-Various translations have been added,
-You can view two translations at the same time.
-You can remember your favorite sayings by providing highlights, bookmarks and favorites.
-Spread the grace to those around you by copying and sharing your favorite words. :)
+■ Bible verses on your lock screen
+• See a Bible verse as soon as you turn on your screen.
+• Choose how verses appear:
+  - Verse of the day: one verse a day from 432 hand-picked passages
+  - In order: read through the whole Bible, Genesis to Revelation
+  - Favorites only: cycle through the verses you saved
+• Jump to any book, chapter and verse right from the lock screen.
+• Turn the lock screen on or off at any time.
 
-Search
-You can easily find the phrase you want on the lock screen.
-You can find verses by searching by Word.
+■ Read the Bible
+• 7 translations including the King James Version (KJV), American Standard Version (ASV), Louis Segond and Luther
+• Parallel Bible: read two translations side by side
+• Highlight, bookmark and favorite the verses that speak to you
+• Works offline: the whole Bible is on your phone, no internet needed
 
-Settings
-Support dark mode.
-You can freely change the font size.
-You can align the text to any position you want.
+■ Share the Word
+• Turn any verse into a beautiful verse image and share it with friends and family
+• Copy or share verses as text
 
-Permission
-Appear on top: Required to run the app on the lock screen.
+■ Bible search
+• Search the whole Bible by word
+• Search right from the lock screen
+
+■ Comfortable reading
+• Dark mode
+• Adjustable font size and text alignment
+
+■ Translations
+King James Version (KJV), American King James Version (AKJV), American Standard Version (ASV), Updated King James Version (UKJV), Korean Revised Version, Louis Segond 1910 (French), Luther 1912 (German)
+
+■ Permission
+• Display over other apps: needed to show verses on the lock screen.
+
+May God's Word be with you every day.
