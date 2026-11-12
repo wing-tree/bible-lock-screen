@@ -73,9 +73,6 @@ class FontSettingsFragment : PreferenceFragment(),
         val textAlignment = DataStore.Font.getTextAlignment(requireContext())
 
         val list: List<AdapterItem> = arrayListOf(
-            AdapterItem.PreferenceCategory(
-                category = getString(R.string.lock_screen)
-            ),
             AdapterItem.Preference(
                 drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_round_format_size_24),
                 id = Id.FONT_SIZE,
