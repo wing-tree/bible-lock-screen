@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.duke.orca.android.kotlin.biblelockscreen.R
@@ -76,11 +77,16 @@ class ColorPickerDialogFragment : BaseDialogFragment<FragmentColorPickerDialogBi
                     initialPrefetchItemCount = colorAdapter.itemCount
                 }
             }
+
+            textViewRemove.isVisible = pickedColor != 0
+            textViewRemove.setOnClickListener {
+                onColorPickedListener?.onColorPicked(this@ColorPickerDialogFragment, 0)
+            }
         }
     }
 
     companion object {
-        private const val SPAN_COUNT = 5
+        private const val SPAN_COUNT = 6
 
         fun newInstance(@ColorInt pickedColor: Int): ColorPickerDialogFragment {
             return ColorPickerDialogFragment().apply {

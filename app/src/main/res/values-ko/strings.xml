@@ -32,6 +32,7 @@
     <string name="hide_notification_content_title">알림 숨기기</string>
     <string name="hide_notification_content_text">알림을 숨기려면 여기를 누르고 \'알림 허용\' 옵션을 해제해주세요.</string>
     <string name="highlights">하이라이트</string>
+    <string name="remove_highlight">지우기</string>
     <string name="lock_screen">잠금화면</string>
     <string name="lock_setting">잠금 설정</string>
     <string name="lock_type">잠금 방식</string>

@@ -31,6 +31,7 @@
     <string name="hide_notification_content_title">Hide Notification</string>
     <string name="hide_notification_content_text">To hide notification, tap here and uncheck \'Allow notifications\'.</string>
     <string name="highlights">Highlights</string>
+    <string name="remove_highlight">Remove</string>
     <string name="lock_screen">Lock screen</string>
     <string name="lock_setting">Lock setting</string>
     <string name="lock_type">Lock type</string>
