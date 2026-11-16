@@ -312,6 +312,9 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
         viewLifecycleOwner.lifecycleScope.launch {
             val start = startVerse()
 
+            // 넘긴 구절마다 쌓이는 화면 상태가 잠금 해제 때 1MB 를 넘겨 TransactionTooLargeException 이 난다.
+            // 위치는 setCurrentItem 으로 직접 되살리므로 페이저 상태는 저장하지 않는다.
+            viewBinding.viewPager2.isSaveEnabled = false
             viewBinding.viewPager2.adapter = versePagerAdapter
             viewBinding.viewPager2.offscreenPageLimit = limit
             viewBinding.viewPager2.registerOnPageChangeCallback(onPageChangeCallback)

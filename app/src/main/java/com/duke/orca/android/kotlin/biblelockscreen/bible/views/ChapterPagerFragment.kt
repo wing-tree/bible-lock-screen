@@ -246,6 +246,8 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
             viewModel.insertPosition(Position(book, chapter, verse.dec()))
 
             viewPager2.apply {
+                // 넘긴 장마다 화면 상태가 쌓여 저장 묶음이 커지므로 저장하지 않는다(위치는 setCurrentItem 으로 되살림).
+                isSaveEnabled = false
                 adapter = chapterPagerAdapter
                 offscreenPageLimit = limit
                 registerOnPageChangeCallback(onPageChangeCallback)

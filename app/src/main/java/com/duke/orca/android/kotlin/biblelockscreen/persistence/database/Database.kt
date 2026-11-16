@@ -16,6 +16,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.migrati
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.migration.MIGRATION_2_3
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.migration.MIGRATION_3_4
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.typeconverters.TypeConverters
+import kotlin.concurrent.thread
 
 @androidx.room.Database(
     entities = [Bible::class, Position::class, Verse::class],
@@ -47,22 +48,25 @@ abstract class Database: RoomDatabase() {
             }
         }
 
+        // 새 DB 로 먼저 갈아 끼우고, 옛 DB 는 백그라운드에서 닫는다.
+        // close() 는 돌고 있는 쿼리가 끝날 때까지 기다리므로 메인 스레드에서 부르면 ANR 이 난다.
         fun refresh(context: Context) {
-            synchronized(this) {
-                clear()
-                INSTANCE = getBuilder(context).build()
+            val old = synchronized(this) {
+                INSTANCE.also {
+                    INSTANCE = getBuilder(context).build()
+                }
             }
+
+            close(old)
         }
 
-        private fun clear() {
-            synchronized(this) {
-                INSTANCE?.let {
-                    if (it.isOpen) {
-                        it.close()
-                    }
-                }
+        private fun close(database: Database?) {
+            database ?: return
 
-                INSTANCE = null
+            thread(name = "DatabaseClose") {
+                if (database.isOpen) {
+                    database.close()
+                }
             }
         }
 
