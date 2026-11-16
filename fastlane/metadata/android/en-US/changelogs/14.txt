@@ -1,0 +1,4 @@
+- New app icon colors
+- Highlights now come in six colors, with a Remove button
+- Fixed a crash when unlocking after browsing many verses
+- Fixed a freeze when changing translations
