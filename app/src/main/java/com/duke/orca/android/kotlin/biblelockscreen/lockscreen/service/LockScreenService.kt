@@ -1,5 +1,6 @@
 package com.duke.orca.android.kotlin.biblelockscreen.lockscreen.service
 
+import android.app.ForegroundServiceStartNotAllowedException
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.media.AudioManager
+import android.os.Build
 import android.os.IBinder
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
@@ -68,12 +70,21 @@ class LockScreenService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // startForegroundService 뒤에는 바로 startForeground 를 불러야 한다(5초 제한).
-        ServiceCompat.startForeground(
-            this,
-            NotificationBuilder.ID,
-            NotificationBuilder.create(this).build(),
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-        )
+        try {
+            ServiceCompat.startForeground(
+                this,
+                NotificationBuilder.ID,
+                NotificationBuilder.create(this).build(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            )
+        } catch (e: IllegalStateException) {
+            // 프로세스가 죽은 뒤 START_STICKY 로 백그라운드에서 되살아나면 Android 12+ 가 포그라운드 시작을 막는다.
+            // 크래시 대신 멈추고, 앱을 열거나 재부팅할 때 다시 시작한다.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || e !is ForegroundServiceStartNotAllowedException) throw e
+
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
         if (DataStore.LockScreen.getShowOnLockScreen(this).not()) {
             stopSelf()
