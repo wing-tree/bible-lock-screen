@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.viewbinding.ViewBinding
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.BLANK
 import com.duke.orca.android.kotlin.biblelockscreen.application.setTextWithSearchWord
+import com.duke.orca.android.kotlin.biblelockscreen.bible.hyphenated
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Bible
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.BookItemBinding
@@ -84,11 +85,11 @@ class VerseAdapter(
                         viewBinding.textViewVerse.text = "${item.verse}"
 
                         if (searchWord.isBlank()) {
-                            viewBinding.textViewWord.text = item.word
+                            viewBinding.textViewWord.text = item.word.hyphenated()
                         } else {
                             viewBinding.textViewWord.setTextWithSearchWord(
-                                item.word,
-                                searchWord,
+                                item.word.hyphenated(),
+                                searchWord.hyphenated(),
                                 color
                             )
                         }

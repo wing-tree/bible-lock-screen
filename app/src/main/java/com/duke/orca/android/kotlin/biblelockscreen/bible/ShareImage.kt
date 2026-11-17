@@ -78,7 +78,7 @@ private fun drawVerse(context: Context, bible: Bible, content: Content): Bitmap 
 
     while (true) {
         textPaint.textSize = textSize
-        layout = staticLayout(content.word, textPaint, textWidth, 1.5f)
+        layout = staticLayout(content.word.hyphenated(), textPaint, textWidth, 1.5f)
 
         if (layout.height <= maxTextHeight || textSize <= MIN_TEXT_SIZE) break
 

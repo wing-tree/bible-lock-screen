@@ -32,18 +32,27 @@ object DataStore {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val cache = AtomicReference<Preferences?>(null)
 
+    // 디스크 쓰기는 부른 순서대로 하나씩 한다.
+    private val writer = Dispatchers.IO.limitedParallelism(1)
+
     // 메인 스레드에서 읽어도 막히지 않도록 Preferences 를 메모리에 들고 있는다.
+    // 쓰기는 모두 이 객체를 거치므로 처음 한 번만 읽고, 그 뒤로는 쓸 때마다 캐시에 바로 반영한다.
+    // (디스크 변경을 받아 캐시를 통째로 덮으면, 먼저 끝난 쓰기의 옛 스냅숏이 방금 쓴 값을 지운다.)
     fun init(context: Context) {
         val applicationContext = context.applicationContext
 
-        scope.launch {
-            applicationContext.preferencesDataStore.data.collect { cache.set(it) }
-        }
+        scope.launch { preferences(applicationContext) }
     }
 
-    private fun preferences(context: Context): Preferences = cache.get() ?: runBlocking {
-        context.preferencesDataStore.data.first()
-    }.also { cache.compareAndSet(null, it) }
+    private fun preferences(context: Context): Preferences = cache.get() ?: run {
+        cache.compareAndSet(null, runBlocking { context.preferencesDataStore.data.first() })
+        cache.get()!!
+    }
+
+    private fun <T> remember(context: Context, key: Preferences.Key<T>, value: T) {
+        preferences(context)
+        cache.updateAndGet { it!!.toMutablePreferences().apply { this[key] = value } }
+    }
 
     private fun <T> get(context: Context, key: Preferences.Key<T>, defValue: T): T =
         preferences(context)[key] ?: defValue
@@ -57,16 +66,17 @@ object DataStore {
     private fun getString(context: Context, key: Preferences.Key<String>, defValue: String) = get(context, key, defValue)
 
     private suspend fun <T> put(context: Context, key: Preferences.Key<T>, value: T) {
-        cache.set(context.preferencesDataStore.edit { it[key] = value })
+        remember(context, key, value)
+        context.preferencesDataStore.edit { it[key] = value }
     }
 
     // 기다리지 않는 쓰기: 캐시를 먼저 바꿔 바로 다음 읽기에도 새 값이 보이게 한다.
     private fun <T> putAsync(context: Context, key: Preferences.Key<T>, value: T) {
-        cache.set(preferences(context).toMutablePreferences().apply { this[key] = value })
+        remember(context, key, value)
 
         val applicationContext = context.applicationContext
 
-        scope.launch { put(applicationContext, key, value) }
+        scope.launch(writer) { applicationContext.preferencesDataStore.edit { it[key] = value } }
     }
 
     suspend fun putBoolean(context: Context, key: Preferences.Key<Boolean>, value: Boolean) = put(context, key, value)

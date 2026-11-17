@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/font_family_nanum_myeongjo"
         android:format12Hour="@string/pattern_format_12_hour_000"
+        android:format24Hour="@string/pattern_format_12_hour_000"
         android:gravity="center_vertical"
         android:includeFontPadding="false"
         android:textColor="@color/subtitle"

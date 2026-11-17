@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.duke.orca.android.kotlin.biblelockscreen.R
 import com.duke.orca.android.kotlin.biblelockscreen.application.*
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Duration
+import com.duke.orca.android.kotlin.biblelockscreen.bible.hyphenated
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Font
 import com.duke.orca.android.kotlin.biblelockscreen.databinding.OptionsMenuBarBinding
@@ -98,16 +99,16 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
                         textViewVerse.text = verse
 
                         if (item.highlightColor.isZero()) {
-                            textViewWord.text = item.word
+                            textViewWord.text = item.word.hyphenated()
                         } else {
-                            textViewWord.setHighlightedText(item.highlightColor, item.word)
+                            textViewWord.setHighlightedText(item.highlightColor, item.word.hyphenated())
                         }
 
                         item.subWord?.let {
                             if (item.highlightColor.isZero()) {
-                                textViewSubWord.text = it
+                                textViewSubWord.text = it.hyphenated()
                             } else {
-                                textViewSubWord.setHighlightedText(item.highlightColor, item.subWord)
+                                textViewSubWord.setHighlightedText(item.highlightColor, it.hyphenated())
                             }
                         } ?: run {
                             textViewSubWord.hide()

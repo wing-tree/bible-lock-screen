@@ -22,6 +22,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.application.isNotVisible
 import com.duke.orca.android.kotlin.biblelockscreen.application.show
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.BaseFragment
 import com.duke.orca.android.kotlin.biblelockscreen.bible.copyToClipboard
+import com.duke.orca.android.kotlin.biblelockscreen.bible.hyphenated
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Font
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Verse
@@ -138,7 +139,7 @@ class VerseFragment : BaseFragment<FragmentVerseBinding>(),
     }
 
     private fun bind(binding: FragmentVerseBinding, verse: Verse, subVerse: Verse?) {
-        binding.textViewWord.text = verse.word
+        binding.textViewWord.text = verse.word.hyphenated()
         binding.textViewBook.text = viewModel.bible.name(verse.book)
         binding.textViewChapter.text = "${verse.chapter}"
         binding.textViewVerse.text = "${verse.verse}"
@@ -147,7 +148,7 @@ class VerseFragment : BaseFragment<FragmentVerseBinding>(),
             binding.textViewSubWord.show()
             binding.linearLayoutSub.show()
 
-            binding.textViewSubWord.text = it.word
+            binding.textViewSubWord.text = it.word.hyphenated()
             binding.textViewSubBook.text = viewModel.subBible?.name(it.book) ?: BLANK
             binding.textViewSubChapter.text = "${it.chapter}"
             binding.textViewSubVerse.text = "${it.verse}"

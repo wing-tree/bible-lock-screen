@@ -43,3 +43,7 @@ fun share(context: Context, bible: Bible, content: Content) {
         context.startActivity(this)
     }
 }
+
+// 나눔명조의 '-'(U+002D)는 줄표처럼 길어서, 화면에는 같은 폰트의 하이픈 글자(U+2010)로 바꿔 그린다.
+// 복사·공유 글은 원문 그대로 둔다.
+fun String.hyphenated() = replace('-', '\u2010')
