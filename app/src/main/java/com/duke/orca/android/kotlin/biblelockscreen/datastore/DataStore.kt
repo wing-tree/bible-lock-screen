@@ -57,6 +57,9 @@ object DataStore {
     private fun <T> get(context: Context, key: Preferences.Key<T>, defValue: T): T =
         preferences(context)[key] ?: defValue
 
+    private fun <T : Any> get(context: Context, key: Preferences.Key<T>, defValue: Nothing?): T? =
+        preferences(context)[key]
+
     private fun getBoolean(context: Context, key: Preferences.Key<Boolean>, defValue: Boolean) = get(context, key, defValue)
 
     private fun getInt(context: Context, key: Preferences.Key<Int>, defValue: Int) = get(context, key, defValue)
@@ -98,18 +101,27 @@ object DataStore {
     }
 
     object Display {
-        fun isDarkMode(context: Context): Boolean {
-            val defValue = when(context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                AppCompatDelegate.MODE_NIGHT_YES, Configuration.UI_MODE_NIGHT_YES -> true
-                AppCompatDelegate.MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_NO -> false
-                AppCompatDelegate.MODE_NIGHT_UNSPECIFIED, Configuration.UI_MODE_NIGHT_UNDEFINED -> true
-                else -> true
-            }
+        // AppCompatDelegate.MODE_NIGHT_* 값을 그대로 저장한다. 고른 적이 없으면 시스템 설정을 따른다.
+        // 옛 켜기·끄기를 직접 바꾼 적이 있으면 그 값을 이어 쓴다.
+        fun getNightMode(context: Context): Int {
+            get(context, PreferencesKeys.Display.nightMode, null)?.let { return it }
 
-            return getBoolean(context, PreferencesKeys.Display.isDarkMode, defValue)
+            return when (get(context, PreferencesKeys.Display.isDarkMode, null)) {
+                true -> AppCompatDelegate.MODE_NIGHT_YES
+                false -> AppCompatDelegate.MODE_NIGHT_NO
+                null -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
         }
 
-        fun putDarkMode(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.Display.isDarkMode, value)
+        // 메인 스레드에서 부른다. 바꾸면 AppCompat 이 열린 화면을 알아서 다시 만든다.
+        fun putNightMode(context: Context, value: Int) {
+            putAsync(context, PreferencesKeys.Display.nightMode, value)
+            AppCompatDelegate.setDefaultNightMode(value)
+        }
+
+        // 지금 화면이 실제로 어두운지(시스템 설정 따르기일 때도 맞게 나온다).
+        fun isDarkMode(context: Context): Boolean =
+            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     object Font {

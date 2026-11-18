@@ -17,6 +17,9 @@
     <string name="colon">:</string>
     <string name="copy">Copy</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="night_mode_dark">Dark</string>
+    <string name="night_mode_light">Light</string>
+    <string name="night_mode_system">Follow system</string>
     <string name="deny">Deny</string>
     <string name="display">Display</string>
     <string name="display_after_unlocking">Display after unlocking</string>

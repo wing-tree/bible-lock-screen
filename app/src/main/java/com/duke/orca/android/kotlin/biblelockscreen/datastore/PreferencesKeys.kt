@@ -34,7 +34,8 @@ object PreferencesKeys {
 
     object Display {
         private const val OBJECT_NAME = "Display"
-        val isDarkMode = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isDarkMode")
+        val isDarkMode = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isDarkMode") // 옛 켜기·끄기 값. nightMode 가 없을 때만 읽는다.
+        val nightMode = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.nightMode")
     }
 
     object LockScreen {

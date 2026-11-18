@@ -18,6 +18,9 @@
     <string name="colon">:</string>
     <string name="copy">복사</string>
     <string name="dark_mode">다크 모드</string>
+    <string name="night_mode_dark">다크</string>
+    <string name="night_mode_light">라이트</string>
+    <string name="night_mode_system">시스템 설정 따르기</string>
     <string name="deny">거부</string>
     <string name="display">디스플레이</string>
     <string name="display_after_unlocking">잠금 해제 후 표시</string>

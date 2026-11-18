@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.*
 import androidx.viewpager2.widget.ViewPager2
@@ -328,11 +329,13 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
         }
 
         viewBinding.imageViewDarkMode.setOnClickListener {
-            DataStore.Display.putDarkMode(it.context, isDarkMode.not())
+            // 누르면 시스템 설정 따르기를 멈추고 지금과 반대로 정한다.
+            val nightMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES
+
             viewModel.updateRecentlyRead(currentBook, currentChapter)
 
             delayOnLifecycle(Duration.Delay.RECREATE) {
-                activity?.recreate()
+                DataStore.Display.putNightMode(requireContext(), nightMode)
             }
         }
     }

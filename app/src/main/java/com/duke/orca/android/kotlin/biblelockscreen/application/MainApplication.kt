@@ -16,15 +16,7 @@ class MainApplication : Application() {
         INSTANCE = this
         DataStore.init(this)
 
-        with(DataStore.Display.isDarkMode(this)) {
-            AppCompatDelegate.setDefaultNightMode(
-                if (this) {
-                    AppCompatDelegate.MODE_NIGHT_YES
-                } else {
-                    AppCompatDelegate.MODE_NIGHT_NO
-                }
-            )
-        }
+        AppCompatDelegate.setDefaultNightMode(DataStore.Display.getNightMode(this))
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
