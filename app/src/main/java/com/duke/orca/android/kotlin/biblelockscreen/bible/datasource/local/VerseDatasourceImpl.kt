@@ -1,14 +1,20 @@
 package com.duke.orca.android.kotlin.biblelockscreen.bible.datasource.local
 
 import androidx.annotation.ColorInt
+import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Mark
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.entries.Verse
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.Database
+import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.RecordDatabase
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class VerseDatasourceImpl @Inject constructor(private val database: Database) : VerseDatasource {
+class VerseDatasourceImpl @Inject constructor(
+    private val database: Database,
+    private val recordDatabase: RecordDatabase
+) : VerseDatasource {
     override fun get(id: Int): Flow<Verse> {
         return database.verseDao().get(id)
     }
@@ -47,13 +53,23 @@ class VerseDatasourceImpl @Inject constructor(private val database: Database) : 
 
     override suspend fun updateBookmark(id: Int, bookmark: Boolean) {
         database.verseDao().updateBookmark(id, bookmark)
+        remember(id) { it.copy(bookmark = bookmark) }
     }
 
     override suspend fun updateFavorite(id: Int, favorite: Boolean) {
         database.verseDao().updateFavorite(id, favorite)
+        remember(id) { it.copy(favorite = favorite) }
     }
 
     override suspend fun updateHighlightColor(id: Int, @ColorInt highlightColor: Int) {
         database.verseDao().updateHighlightColor(id, highlightColor)
+        remember(id) { it.copy(highlightColor = highlightColor) }
+    }
+
+    // 번역본을 바꿔도 남도록 기록 저장소에도 장·절 위치로 남긴다.
+    private suspend fun remember(id: Int, block: (Mark) -> Mark) {
+        val verse = database.verseDao().get(id).first()
+
+        recordDatabase.markDao().update(verse.book, verse.chapter, verse.verse, block)
     }
 }

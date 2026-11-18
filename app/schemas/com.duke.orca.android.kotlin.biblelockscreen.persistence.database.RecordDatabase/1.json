@@ -1,0 +1,63 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "2a4ce973173d04a76a8c1634de9b9e2e",
+    "entities": [
+      {
+        "tableName": "mark",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`book` INTEGER NOT NULL, `chapter` INTEGER NOT NULL, `verse` INTEGER NOT NULL, `bookmark` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, `highlight_color` INTEGER NOT NULL, PRIMARY KEY(`book`, `chapter`, `verse`))",
+        "fields": [
+          {
+            "fieldPath": "book",
+            "columnName": "book",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chapter",
+            "columnName": "chapter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "verse",
+            "columnName": "verse",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bookmark",
+            "columnName": "bookmark",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "favorite",
+            "columnName": "favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "highlightColor",
+            "columnName": "highlight_color",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "book",
+            "chapter",
+            "verse"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2a4ce973173d04a76a8c1634de9b9e2e')"
+    ]
+  }
+}

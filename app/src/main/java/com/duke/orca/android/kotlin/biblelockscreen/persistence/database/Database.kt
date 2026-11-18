@@ -90,6 +90,7 @@ abstract class Database: RoomDatabase() {
                 .allowMainThreadQueries()
                 .createFromAsset("$fileName.db")
                 .addCallback(BookNameFix(fileName))
+                .addCallback(MarkSync(context, fileName))
         }
     }
 }

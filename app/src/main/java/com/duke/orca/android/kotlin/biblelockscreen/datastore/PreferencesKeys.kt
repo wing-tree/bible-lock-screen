@@ -38,6 +38,11 @@ object PreferencesKeys {
         val nightMode = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.nightMode")
     }
 
+    object Record {
+        private const val OBJECT_NAME = "Record"
+        val isMerged = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isMerged")
+    }
+
     object LockScreen {
         private const val OBJECT_NAME = "LockScreen"
         val displayAfterUnlocking = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.displayAfterUnlocking")

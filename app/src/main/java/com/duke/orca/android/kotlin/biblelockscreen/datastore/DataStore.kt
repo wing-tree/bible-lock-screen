@@ -193,6 +193,13 @@ object DataStore {
         }
     }
 
+    object Record {
+        // 옛 번역본 DB 들의 표시를 기록 저장소로 한 번 모았는지.
+        fun isMerged(context: Context) = getBoolean(context, PreferencesKeys.Record.isMerged, false)
+
+        fun putMerged(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.Record.isMerged, value)
+    }
+
     object Translation {
         fun getFileName(context: Context): String = getString(context, PreferencesKeys.Translation.fileName, BLANK)
 
