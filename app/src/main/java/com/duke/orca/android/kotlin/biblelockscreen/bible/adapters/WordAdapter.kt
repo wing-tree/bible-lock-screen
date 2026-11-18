@@ -1,5 +1,7 @@
 package com.duke.orca.android.kotlin.biblelockscreen.bible.adapters
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -57,18 +60,22 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
         holder.bind(position)
     }
 
-    // 형광펜 아래 띠는 그 색으로 칠하고, 칠해 둔 색은 펜까지 그 색으로 칠한다.
-    private fun highlighter(context: Context, @ColorInt color: Int, picked: Boolean): LayerDrawable {
-        val penColor = if (picked) color else ContextCompat.getColor(context, R.color.unhighlighted)
-
+    // 형광펜 아래 띠는 그 색으로 칠한다. 펜(0번 층) 색은 bind 에서 정한다.
+    private fun highlighter(context: Context, @ColorInt color: Int): LayerDrawable {
         fun layer(@DrawableRes id: Int, @ColorInt tint: Int) =
             ContextCompat.getDrawable(context, id)!!.mutate().apply { setTint(tint) }
 
         return LayerDrawable(arrayOf(
-            layer(R.drawable.ic_ink_highlighter_pen_28, penColor),
+            layer(R.drawable.ic_ink_highlighter_pen_28, ContextCompat.getColor(context, R.color.unhighlighted)),
             layer(R.drawable.ic_ink_highlighter_bar_28, color),
         ))
     }
+
+    private val argbEvaluator = ArgbEvaluator()
+
+    @ColorInt
+    private fun blend(@ColorInt from: Int, @ColorInt to: Int, fraction: Float) =
+        argbEvaluator.evaluate(fraction, from, to) as Int
 
     private fun setCurrentFocus(position: Int) {
         currentFocus = if (currentFocus.`is`(position)) {
@@ -98,6 +105,11 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
     }
 
     inner class ViewHolder(private val viewBinding: WordItemBinding) : RecyclerView.ViewHolder(viewBinding.root) {
+        // 하이라이트를 바꾸면 글자 바탕·형광펜·지우개를 페이드로 바꾼다.
+        private var boundId = -1
+        @ColorInt private var boundColor = 0
+        private var fade: ValueAnimator? = null
+
         fun bind(position: Int) {
             when(val item = getItem(position)) {
                 is AdapterItem.Word -> {
@@ -115,24 +127,23 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
 
                         textViewVerse.text = verse
 
-                        if (item.highlightColor.isZero()) {
-                            textViewWord.text = item.word.hyphenated()
-                        } else {
-                            textViewWord.setHighlightedText(item.highlightColor, item.word.hyphenated())
-                        }
+                        // 같은 구절의 색이 바뀐 것이면 바뀌기 전 색에서부터 페이드한다.
+                        val from = if (item.id == boundId) boundColor else item.highlightColor
 
-                        item.subWord?.let {
-                            if (item.highlightColor.isZero()) {
-                                textViewSubWord.text = it.hyphenated()
-                            } else {
-                                textViewSubWord.setHighlightedText(item.highlightColor, it.hyphenated())
-                            }
-                        } ?: run {
+                        boundId = item.id
+                        boundColor = item.highlightColor
+                        fade?.cancel()
+
+                        val updates = mutableListOf<(Float) -> Unit>()
+
+                        bindHighlight(item, from)?.let { updates += it }
+
+                        if (item.subWord == null) {
                             textViewSubWord.hide()
                         }
 
                         if (currentFocus.`is`(position)) {
-                            optionsMenuBar.bind(item)
+                            updates += optionsMenuBar.bind(item, from)
 
                             with(frameLayout) {
                                 if (isNotVisible) {
@@ -150,13 +161,65 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
                         constraintLayout.setOnClickListener {
                             setCurrentFocus(position)
                         }
+
+                        if (updates.isNotEmpty()) {
+                            fade = ValueAnimator.ofFloat(0.0f, 1.0f).apply {
+                                duration = Duration.Animation.FADE_IN
+                                addUpdateListener { animator ->
+                                    updates.forEach { it(animator.animatedFraction) }
+                                }
+                                start()
+                            }
+                        }
                     }
                 }
             }
         }
 
-        private fun OptionsMenuBarBinding.bind(item: AdapterItem.Word) {
+        // 글자 바탕색을 칠한다. 색이 바뀌었으면 페이드할 함수를 돌려준다.
+        private fun WordItemBinding.bindHighlight(item: AdapterItem.Word, @ColorInt from: Int): ((Float) -> Unit)? {
+            val to = item.highlightColor
+            val word = item.word.hyphenated()
+            val subWord = item.subWord?.hyphenated()
+
+            if (from == to) {
+                textViewWord.setHighlight(to, word)
+                subWord?.let { textViewSubWord.setHighlight(to, it) }
+
+                return null
+            }
+
+            // 없던 색은 같은 색의 투명에서, 지우는 색은 투명으로 간다.
+            val start = if (from.isZero()) to and 0x00FFFFFF else from
+            val end = if (to.isZero()) from and 0x00FFFFFF else to
+            val span = HighlightColorSpan(start)
+
+            textViewWord.setHighlightedText(span, word)
+            subWord?.let { textViewSubWord.setHighlightedText(span, it) }
+
+            return { fraction ->
+                span.highlightColor = blend(start, end, fraction)
+                textViewWord.invalidate()
+                textViewSubWord.invalidate()
+
+                if (fraction >= 1.0f && to.isZero()) {
+                    textViewWord.text = word
+                    subWord?.let { textViewSubWord.text = it }
+                }
+            }
+        }
+
+        private fun TextView.setHighlight(@ColorInt color: Int, text: String) {
+            if (color.isZero()) {
+                this.text = text
+            } else {
+                setHighlightedText(color, text)
+            }
+        }
+
+        private fun OptionsMenuBarBinding.bind(item: AdapterItem.Word, @ColorInt from: Int): List<(Float) -> Unit> {
             val context = root.context
+            val updates = mutableListOf<(Float) -> Unit>()
 
             textViewVerse.text = item.verse.toString()
 
@@ -168,18 +231,33 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
                         context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, it, true)
                     }
 
-                    repeat(highlightColors.size) {
+                    highlightColors.forEach { color ->
                         addView(ImageView(context).apply {
                             layoutParams = LinearLayout.LayoutParams(size, size)
                             scaleType = ImageView.ScaleType.CENTER
                             setBackgroundResource(ripple.resourceId)
+                            setImageDrawable(highlighter(context, color))
                         })
                     }
                 }
 
+                // 칠해 둔 색은 펜까지 그 색으로 칠한다.
+                val unpicked = ContextCompat.getColor(context, R.color.unhighlighted)
+
+                fun penColor(@ColorInt color: Int, @ColorInt picked: Int) = if (color == picked) color else unpicked
+
                 highlightColors.forEachIndexed { index, color ->
                     with(getChildAt(index) as ImageView) {
-                        setImageDrawable(highlighter(context, color, color == item.highlightColor))
+                        val pen = (drawable as LayerDrawable).getDrawable(0)
+                        val start = penColor(color, from)
+                        val end = penColor(color, item.highlightColor)
+
+                        pen.setTint(start)
+
+                        if (start != end) {
+                            updates += { pen.setTint(blend(start, end, it)) }
+                        }
+
                         setOnClickListener {
                             onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.Highlight(color))
                         }
@@ -187,7 +265,23 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
                 }
             }
 
-            imageViewRemoveHighlight.isVisible = item.highlightColor.isNonZero()
+            with(imageViewRemoveHighlight) {
+                animate().cancel()
+
+                when {
+                    from == item.highlightColor -> {
+                        alpha = 1.0f
+                        isVisible = item.highlightColor.isNonZero()
+                    }
+                    item.highlightColor.isZero() -> fadeOut()
+                    from.isZero() -> fadeIn()
+                    else -> {
+                        alpha = 1.0f
+                        show()
+                    }
+                }
+            }
+
             imageViewRemoveHighlight.setOnClickListener {
                 onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.Highlight(0))
             }
@@ -231,6 +325,8 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
             imageViewMore.setOnClickListener {
                 onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.More)
             }
+
+            return updates
         }
     }
 

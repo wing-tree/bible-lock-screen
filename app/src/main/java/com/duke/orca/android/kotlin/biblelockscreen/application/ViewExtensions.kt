@@ -495,8 +495,12 @@ fun AutoCompleteTextView.setStringArrayAdapter(stringArray: Array<String>, @Layo
 }
 
 fun TextView.setHighlightedText(@ColorInt color: Int, text: String) {
+    setHighlightedText(HighlightColorSpan(color), text)
+}
+
+fun TextView.setHighlightedText(span: HighlightColorSpan, text: String) {
     SpannableString(text).apply {
-        setSpan(HighlightColorSpan(color), 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        setSpan(span, 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         setText(this, TextView.BufferType.SPANNABLE)
     }
 }
@@ -508,7 +512,8 @@ fun TextView.setTextWithFading(text: CharSequence) {
     }
 }
 
-class HighlightColorSpan (@ColorInt val highlightColor: Int) : LineBackgroundSpan {
+// 칠하기를 페이드로 보이려고 색을 바꿀 수 있게 둔다(바꾼 뒤 invalidate).
+class HighlightColorSpan (@ColorInt var highlightColor: Int) : LineBackgroundSpan {
     private val rect = Rect()
 
     override fun drawBackground(
