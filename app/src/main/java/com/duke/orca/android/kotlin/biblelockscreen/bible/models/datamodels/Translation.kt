@@ -114,7 +114,7 @@ object Translation {
             FileName.LUTHER_BIBLE -> Abbreviation.LUTHER_BIBLE
             FileName.UPDATED_KING_JAMES_VERSION -> Abbreviation.UPDATED_KING_JAMES_VERSION
             FileName.NEW_KOREAN_REVISED_VERSION -> Abbreviation.NEW_KOREAN_REVISED_VERSION
-            else -> throw IllegalArgumentException("IllegalArgumentException :$fileName")
+            else -> fileName // 모르는 파일 이름이어도 죽지 않고 이름 그대로 보인다.
         }
     }
 
@@ -128,7 +128,7 @@ object Translation {
             FileName.LUTHER_BIBLE -> Name.LUTHER_BIBLE
             FileName.UPDATED_KING_JAMES_VERSION -> Name.UPDATED_KING_JAMES_VERSION
             FileName.NEW_KOREAN_REVISED_VERSION -> Name.NEW_KOREAN_REVISED_VERSION
-            else -> throw IllegalArgumentException("IllegalArgumentException :$fileName")
+            else -> fileName
         }
     }
 
@@ -154,7 +154,7 @@ object Translation {
             FileName.LUTHER_BIBLE -> Language.GERMAN
             FileName.UPDATED_KING_JAMES_VERSION -> Language.ENGLISH
             FileName.NEW_KOREAN_REVISED_VERSION -> Language.KOREAN
-            else -> throw IllegalArgumentException("IllegalArgumentException :$fileName")
+            else -> Language.ENGLISH
         }
     }
 

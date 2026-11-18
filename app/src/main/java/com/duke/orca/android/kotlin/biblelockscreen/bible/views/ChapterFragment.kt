@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.ColorInt
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.duke.orca.android.kotlin.biblelockscreen.R
-import com.duke.orca.android.kotlin.biblelockscreen.application.color.view.ColorPickerDialogFragment
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Application
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Duration
 import com.duke.orca.android.kotlin.biblelockscreen.application.fadeIn
@@ -34,7 +32,6 @@ import timber.log.Timber
 @FlowPreview
 @AndroidEntryPoint
 class ChapterFragment : ViewStubFragment(),
-    ColorPickerDialogFragment.OnColorPickedListener,
     OptionChoiceDialogFragment.OnOptionChoiceListener
 {
     override val layoutResource: Int
@@ -141,15 +138,6 @@ class ChapterFragment : ViewStubFragment(),
     override fun onDestroyView() {
         _viewBinding = null
         super.onDestroyView()
-    }
-
-
-    override fun onColorPicked(dialogFragment: DialogFragment, @ColorInt color: Int) {
-        viewModel.updateHighlightColor(wordAdapter.currentFocusedItem.id, color)
-
-        delayOnLifecycle(Duration.Delay.DISMISS) {
-            dialogFragment.dismiss()
-        }
     }
 
     private fun initData() {

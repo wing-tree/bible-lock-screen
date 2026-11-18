@@ -49,15 +49,6 @@
             android:theme="@style/Theme.FragmentContainerActivity"
             android:windowSoftInputMode="adjustNothing|stateHidden" />
 
-        <activity
-            android:name=".settings.views.DisplaySettingsActivity"
-            android:excludeFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.DisplaySettingsActivity"
-            android:windowSoftInputMode="adjustNothing" />
-
         <receiver
             android:name=".devicebootreceiver.DeviceBootReceiver"
             android:enabled="true"
