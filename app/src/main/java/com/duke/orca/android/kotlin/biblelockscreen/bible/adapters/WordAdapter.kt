@@ -2,11 +2,13 @@ package com.duke.orca.android.kotlin.biblelockscreen.bible.adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.drawable.GradientDrawable
 import android.os.Parcelable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -27,6 +29,7 @@ import kotlinx.parcelize.Parcelize
 
 class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordAdapter.ViewHolder>(DiffCallback()) {
     private val layoutInflater = LayoutInflater.from(context)
+    private val highlightColors = context.resources.getIntArray(R.array.highlight_colors)
 
     private var currentFocus: Int = -1
     private var currentFont: Font? = null
@@ -51,6 +54,23 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(position)
+    }
+
+    private fun highlightDot(context: Context, @ColorInt color: Int, picked: Boolean): GradientDrawable {
+        val metrics = context.resources.displayMetrics
+        val size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26f, metrics).toInt()
+
+        return GradientDrawable().apply {
+            shape = GradientDrawable.OVAL
+            setColor(color)
+            setSize(size, size)
+
+            if (picked) {
+                val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2.5f, metrics).toInt()
+
+                setStroke(width, ContextCompat.getColor(context, R.color.text))
+            }
+        }
     }
 
     private fun setCurrentFocus(position: Int) {
@@ -143,29 +163,36 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
 
             textViewVerse.text = item.verse.toString()
 
-            if (item.highlightColor.isNonZero()) {
-                imageViewHighlight.setColorFilter(
-                    item.highlightColor,
-                    PorterDuff.Mode.SRC_ATOP
-                )
-            } else {
-                imageViewHighlight.setColorFilter(
-                    ContextCompat.getColor(context, R.color.unhighlighted),
-                    PorterDuff.Mode.SRC_ATOP
-                )
+            // 색 동그라미를 누르면 창 없이 바로 칠한다. 칠해 둔 색은 테두리로 보인다.
+            with(linearLayoutHighlightColors) {
+                if (childCount == 0) {
+                    val size = context.resources.getDimensionPixelSize(R.dimen.width_40dp)
+                    val ripple = TypedValue().also {
+                        context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, it, true)
+                    }
+
+                    repeat(highlightColors.size) {
+                        addView(ImageView(context).apply {
+                            layoutParams = LinearLayout.LayoutParams(size, size)
+                            scaleType = ImageView.ScaleType.CENTER
+                            setBackgroundResource(ripple.resourceId)
+                        })
+                    }
+                }
+
+                highlightColors.forEachIndexed { index, color ->
+                    with(getChildAt(index) as ImageView) {
+                        setImageDrawable(highlightDot(context, color, color == item.highlightColor))
+                        setOnClickListener {
+                            onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.Highlight(color))
+                        }
+                    }
+                }
             }
 
-            imageViewHighlight.setOnClickListener {
-                onOptionsItemSelectedListener?.onOptionsItemSelected(
-                    item,
-                    OptionsItem.Highlight(
-                        if (item.highlightColor.isZero()) {
-                            item.highlightColor
-                        } else {
-                            0
-                        }
-                    )
-                )
+            textViewRemoveHighlight.isVisible = item.highlightColor.isNonZero()
+            textViewRemoveHighlight.setOnClickListener {
+                onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.Highlight(0))
             }
 
             likeButtonBookmark.isLiked = item.bookmark

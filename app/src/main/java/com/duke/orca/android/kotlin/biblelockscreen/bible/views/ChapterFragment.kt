@@ -52,11 +52,7 @@ class ChapterFragment : ViewStubFragment(),
                     optionsItem: WordAdapter.OptionsItem
                 ) {
                     when(optionsItem) {
-                        is WordAdapter.OptionsItem.Highlight -> {
-                            ColorPickerDialogFragment.newInstance(item.highlightColor).also {
-                                it.show(childFragmentManager, it.tag)
-                            }
-                        }
+                        is WordAdapter.OptionsItem.Highlight -> viewModel.updateHighlightColor(item.id, optionsItem.highlightColor)
                         is WordAdapter.OptionsItem.Bookmark -> viewModel.updateBookmark(item.id, optionsItem.liked)
                         is WordAdapter.OptionsItem.Favorite -> viewModel.updateFavorite(item.id, optionsItem.liked)
                         is WordAdapter.OptionsItem.More -> {

@@ -56,7 +56,7 @@
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_72dp"
+        android:layout_height="wrap_content"
         android:background="@color/background_recycler_view"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -67,7 +67,7 @@
         <include
             android:id="@+id/options_menu_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_56dp"
+            android:layout_height="wrap_content"
             android:clipChildren="false"
             android:clipToPadding="false"
             layout="@layout/options_menu_bar" />
