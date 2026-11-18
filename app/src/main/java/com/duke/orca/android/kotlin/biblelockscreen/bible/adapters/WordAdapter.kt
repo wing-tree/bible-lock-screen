@@ -2,7 +2,7 @@ package com.duke.orca.android.kotlin.biblelockscreen.bible.adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Parcelable
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -56,21 +57,17 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
         holder.bind(position)
     }
 
-    private fun highlightDot(context: Context, @ColorInt color: Int, picked: Boolean): GradientDrawable {
-        val metrics = context.resources.displayMetrics
-        val size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26f, metrics).toInt()
+    // 형광펜 아래 띠는 그 색으로 칠하고, 칠해 둔 색은 펜을 진하게 보인다.
+    private fun highlighter(context: Context, @ColorInt color: Int, picked: Boolean): LayerDrawable {
+        val penColor = ContextCompat.getColor(context, if (picked) R.color.text else R.color.unhighlighted)
 
-        return GradientDrawable().apply {
-            shape = GradientDrawable.OVAL
-            setColor(color)
-            setSize(size, size)
+        fun layer(@DrawableRes id: Int, @ColorInt tint: Int) =
+            ContextCompat.getDrawable(context, id)!!.mutate().apply { setTint(tint) }
 
-            if (picked) {
-                val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2.5f, metrics).toInt()
-
-                setStroke(width, ContextCompat.getColor(context, R.color.text))
-            }
-        }
+        return LayerDrawable(arrayOf(
+            layer(R.drawable.ic_ink_highlighter_pen_28, penColor),
+            layer(R.drawable.ic_ink_highlighter_bar_28, color),
+        ))
     }
 
     private fun setCurrentFocus(position: Int) {
@@ -163,7 +160,7 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
 
             textViewVerse.text = item.verse.toString()
 
-            // 색 동그라미를 누르면 창 없이 바로 칠한다. 칠해 둔 색은 테두리로 보인다.
+            // 형광펜을 누르면 창 없이 바로 칠한다.
             with(linearLayoutHighlightColors) {
                 if (childCount == 0) {
                     val size = context.resources.getDimensionPixelSize(R.dimen.width_40dp)
@@ -182,7 +179,7 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
 
                 highlightColors.forEachIndexed { index, color ->
                     with(getChildAt(index) as ImageView) {
-                        setImageDrawable(highlightDot(context, color, color == item.highlightColor))
+                        setImageDrawable(highlighter(context, color, color == item.highlightColor))
                         setOnClickListener {
                             onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.Highlight(color))
                         }
@@ -190,8 +187,8 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
                 }
             }
 
-            textViewRemoveHighlight.isVisible = item.highlightColor.isNonZero()
-            textViewRemoveHighlight.setOnClickListener {
+            imageViewRemoveHighlight.isVisible = item.highlightColor.isNonZero()
+            imageViewRemoveHighlight.setOnClickListener {
                 onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.Highlight(0))
             }
 

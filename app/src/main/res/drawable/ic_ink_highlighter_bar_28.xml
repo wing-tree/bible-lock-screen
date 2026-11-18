@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Material Symbols Rounded format_ink_highlighter(fill) 의 아래 띠. 펜과 따로 칠하려고 나눴다. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M160,960Q127,960 103.5,936.5Q80,913 80,880Q80,847 103.5,823.5Q127,800 160,800L800,800Q833,800 856.5,823.5Q880,847 880,880Q880,913 856.5,936.5Q833,960 800,960L160,960Z"/>
+</vector>
