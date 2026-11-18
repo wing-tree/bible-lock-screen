@@ -57,9 +57,9 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
         holder.bind(position)
     }
 
-    // 형광펜 아래 띠는 그 색으로 칠하고, 칠해 둔 색은 펜을 진하게 보인다.
+    // 형광펜 아래 띠는 그 색으로 칠하고, 칠해 둔 색은 펜까지 그 색으로 칠한다.
     private fun highlighter(context: Context, @ColorInt color: Int, picked: Boolean): LayerDrawable {
-        val penColor = ContextCompat.getColor(context, if (picked) R.color.text else R.color.unhighlighted)
+        val penColor = if (picked) color else ContextCompat.getColor(context, R.color.unhighlighted)
 
         fun layer(@DrawableRes id: Int, @ColorInt tint: Int) =
             ContextCompat.getDrawable(context, id)!!.mutate().apply { setTint(tint) }
