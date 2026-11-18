@@ -164,7 +164,7 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
 
                         if (updates.isNotEmpty()) {
                             fade = ValueAnimator.ofFloat(0.0f, 1.0f).apply {
-                                duration = Duration.Animation.FADE_IN
+                                duration = Duration.MEDIUM
                                 addUpdateListener { animator ->
                                     updates.forEach { it(animator.animatedFraction) }
                                 }
@@ -273,8 +273,8 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
                         alpha = 1.0f
                         isVisible = item.highlightColor.isNonZero()
                     }
-                    item.highlightColor.isZero() -> fadeOut()
-                    from.isZero() -> fadeIn()
+                    item.highlightColor.isZero() -> fadeOut(Duration.MEDIUM)
+                    from.isZero() -> fadeIn(Duration.MEDIUM)
                     else -> {
                         alpha = 1.0f
                         show()
