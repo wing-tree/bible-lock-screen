@@ -29,14 +29,32 @@ internal class MarkSync(context: Context, private val fileName: String) : RoomDa
             db.beginTransaction()
 
             try {
-                db.execSQL("UPDATE verse SET bookmark = 0, favorite = 0, highlight_color = 0 WHERE bookmark != 0 OR favorite != 0 OR highlight_color != 0")
+                // verse 표엔 (책, 장, 절) 인덱스가 없어 표시마다 UPDATE 하면 표시 수만큼 표 전체를 훑는다.
+                // 임시 표에 모아 두고 한 번에 칠한다.
+                db.execSQL("CREATE TEMP TABLE IF NOT EXISTS mark_sync (book INTEGER NOT NULL, chapter INTEGER NOT NULL, verse INTEGER NOT NULL, bookmark INTEGER NOT NULL, favorite INTEGER NOT NULL, highlight_color INTEGER NOT NULL, PRIMARY KEY (book, chapter, verse))")
+                db.execSQL("DELETE FROM mark_sync")
 
-                marks.forEach {
-                    db.execSQL(
-                        "UPDATE verse SET bookmark = ?, favorite = ?, highlight_color = ? WHERE book = ? AND chapter = ? AND verse = ?",
-                        arrayOf<Any>(if (it.bookmark) 1 else 0, if (it.favorite) 1 else 0, it.highlightColor, it.book, it.chapter, it.verse)
-                    )
+                db.compileStatement("INSERT INTO mark_sync VALUES (?, ?, ?, ?, ?, ?)").use { statement ->
+                    marks.forEach {
+                        statement.bindLong(1, it.book.toLong())
+                        statement.bindLong(2, it.chapter.toLong())
+                        statement.bindLong(3, it.verse.toLong())
+                        statement.bindLong(4, if (it.bookmark) 1 else 0)
+                        statement.bindLong(5, if (it.favorite) 1 else 0)
+                        statement.bindLong(6, it.highlightColor.toLong())
+                        statement.executeInsert()
+                    }
                 }
+
+                db.execSQL("UPDATE verse SET bookmark = 0, favorite = 0, highlight_color = 0 WHERE bookmark != 0 OR favorite != 0 OR highlight_color != 0")
+                db.execSQL("""
+                    UPDATE verse SET
+                        bookmark = (SELECT m.bookmark FROM mark_sync m WHERE m.book = verse.book AND m.chapter = verse.chapter AND m.verse = verse.verse),
+                        favorite = (SELECT m.favorite FROM mark_sync m WHERE m.book = verse.book AND m.chapter = verse.chapter AND m.verse = verse.verse),
+                        highlight_color = (SELECT m.highlight_color FROM mark_sync m WHERE m.book = verse.book AND m.chapter = verse.chapter AND m.verse = verse.verse)
+                    WHERE EXISTS (SELECT 1 FROM mark_sync m WHERE m.book = verse.book AND m.chapter = verse.chapter AND m.verse = verse.verse)
+                    """.trimIndent())
+                db.execSQL("DROP TABLE mark_sync")
 
                 db.setTransactionSuccessful()
             } finally {
