@@ -145,7 +145,7 @@ object LevelPlayKeys {
     const val APP_KEY = "295fa9cad"
 
     // 읽기 화면 아래 배너 단위. 비어 있으면 배너를 붙이지 않는다.
-    const val BANNER_AD_UNIT_ID = ""
+    const val BANNER_AD_UNIT_ID = "4utu7a1opm76mrkc"
 
     // 네이티브 광고 단위. SDK 9.7 네이티브 API 는 단위 ID 를 받지 않아(앱 키로 대시보드 단위가 잡힌다) 받아만 둔다.
     const val NATIVE_AD_UNIT_ID = "phckhlax6jdk9td4"
