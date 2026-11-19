@@ -4,3 +4,4 @@ private const val PACKAGE_NAME = "${Application.PACKAGE_NAME}.application.consta
 
 const val EXTRA_RECREATE = "$PACKAGE_NAME.RECREATE"
 const val EXTRA_SIMPLE_NAME = "$PACKAGE_NAME.SIMPLE_NAME"
+const val EXTRA_CONTENT = "$PACKAGE_NAME.CONTENT"

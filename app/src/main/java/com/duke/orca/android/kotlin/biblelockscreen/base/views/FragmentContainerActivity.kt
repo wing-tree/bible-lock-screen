@@ -4,12 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.CallSuper
+import androidx.core.content.IntentCompat
 import com.duke.orca.android.kotlin.biblelockscreen.R
+import com.duke.orca.android.kotlin.biblelockscreen.application.constants.EXTRA_CONTENT
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.EXTRA_SIMPLE_NAME
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Application
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.EXTRA_RECREATE
 import com.duke.orca.android.kotlin.biblelockscreen.application.notNull
 import com.duke.orca.android.kotlin.biblelockscreen.base.viewmodels.FragmentContainerViewModel
+import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.views.SearchFragment
 import com.duke.orca.android.kotlin.biblelockscreen.bible.views.ChapterPagerFragment
 import com.duke.orca.android.kotlin.biblelockscreen.bible.views.FavoritesFragment
@@ -74,7 +77,9 @@ class FragmentContainerActivity : BaseLockScreenActivity() {
     private fun replaceFragment(simpleName: String) {
         val fragment = when (simpleName) {
             SearchFragment::class.java.simpleName -> SearchFragment()
-            ChapterPagerFragment::class.java.simpleName -> ChapterPagerFragment()
+            ChapterPagerFragment::class.java.simpleName -> intent?.let {
+                IntentCompat.getParcelableExtra(it, EXTRA_CONTENT, Content::class.java)
+            }?.let { ChapterPagerFragment.newInstance(it) } ?: ChapterPagerFragment()
             FavoritesFragment::class.java.simpleName -> FavoritesFragment()
             FontSettingsFragment::class.java.simpleName -> FontSettingsFragment()
             HighlightsFragment::class.java.simpleName -> HighlightsFragment()

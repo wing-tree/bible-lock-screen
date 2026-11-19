@@ -43,6 +43,12 @@ object PreferencesKeys {
         val opens = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.opens")
     }
 
+    object Notice {
+        private const val OBJECT_NAME = "Notice"
+        val isDailyVerseOn = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isDailyVerseOn")
+        val dailyVerseHour = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.dailyVerseHour")
+    }
+
     object Record {
         private const val OBJECT_NAME = "Record"
         val isMerged = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isMerged")

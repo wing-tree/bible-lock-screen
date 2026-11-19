@@ -21,6 +21,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.base.LinearLayoutManagerWrap
 import com.duke.orca.android.kotlin.biblelockscreen.base.viewmodels.FragmentContainerViewModel
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.PreferenceFragment
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Translation
+import com.duke.orca.android.kotlin.biblelockscreen.dailyverse.DailyVerseNotice
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.SubDatabase
 import com.duke.orca.android.kotlin.biblelockscreen.review.Review
@@ -28,12 +29,14 @@ import com.duke.orca.android.kotlin.biblelockscreen.settings.adapters.Preference
 import java.lang.StringBuilder
 
 class SettingsFragment : PreferenceFragment(),
-    TranslationSelectionDialogFragment.OnClickListener {
+    TranslationSelectionDialogFragment.OnClickListener,
+    HourChoiceDialogFragment.OnItemClickListener {
     override val toolbar by lazy { viewBinding.toolbar }
     override val toolbarTitleResId: Int = R.string.settings
 
     private object Id {
         const val TRANSLATION = 0L
+        const val DAILY_VERSE_TIME = 1L
     }
 
     private val activityViewModel by activityViewModels<FragmentContainerViewModel>()
@@ -42,6 +45,13 @@ class SettingsFragment : PreferenceFragment(),
         delayOnLifecycle(Duration.Delay.DISMISS) {
             dialogFragment.dismiss()
         }
+    }
+
+    override fun onHourClick(dialogFragment: DialogFragment, item: Int) {
+        DataStore.Notice.putDailyVerseHour(requireContext(), item)
+        DailyVerseNotice.schedule(requireContext())
+        preferenceAdapter.updateSummary(Id.DAILY_VERSE_TIME, DailyVerseNotice.format(item))
+        dialogFragment.dismiss()
     }
 
     override fun onPositiveButtonClick(
@@ -148,6 +158,33 @@ class SettingsFragment : PreferenceFragment(),
                             " ${getString(R.string.text_alignment)}"
                     ,
                     body = getString(R.string.font)
+                ),
+                AdapterItem.Space(),
+                AdapterItem.SwitchPreference(
+                    drawable = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.round_notifications_24
+                    ),
+                    isChecked = DataStore.Notice.isDailyVerseOn(requireContext()),
+                    onCheckedChange = { isChecked ->
+                        DataStore.Notice.putDailyVerseOn(requireContext(), isChecked)
+                        DailyVerseNotice.schedule(requireContext())
+                    },
+                    body = getString(R.string.daily_verse_notice)
+                ),
+                AdapterItem.Preference(
+                    id = Id.DAILY_VERSE_TIME,
+                    drawable = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.round_schedule_24
+                    ),
+                    onClick = {
+                        HourChoiceDialogFragment().also {
+                            it.show(childFragmentManager, it.tag)
+                        }
+                    },
+                    summary = DailyVerseNotice.format(DataStore.Notice.getDailyVerseHour(requireContext())),
+                    body = getString(R.string.daily_verse_time)
                 ),
                 AdapterItem.Space(),
                 AdapterItem.Preference(

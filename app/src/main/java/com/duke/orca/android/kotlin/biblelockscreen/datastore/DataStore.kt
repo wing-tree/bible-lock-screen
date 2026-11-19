@@ -201,6 +201,19 @@ object DataStore {
         fun putOpens(context: Context, value: Int) = putAsync(context, PreferencesKeys.Ad.opens, value)
     }
 
+    object Notice {
+        const val DEFAULT_HOUR = 8
+
+        // 오늘의 말씀 알림. 처음엔 켜져 있다.
+        fun isDailyVerseOn(context: Context) = getBoolean(context, PreferencesKeys.Notice.isDailyVerseOn, true)
+
+        fun putDailyVerseOn(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.Notice.isDailyVerseOn, value)
+
+        fun getDailyVerseHour(context: Context) = getInt(context, PreferencesKeys.Notice.dailyVerseHour, DEFAULT_HOUR)
+
+        fun putDailyVerseHour(context: Context, value: Int) = putAsync(context, PreferencesKeys.Notice.dailyVerseHour, value)
+    }
+
     object Record {
         // 옛 번역본 DB 들의 표시를 기록 저장소로 한 번 모았는지.
         fun isMerged(context: Context) = getBoolean(context, PreferencesKeys.Record.isMerged, false)

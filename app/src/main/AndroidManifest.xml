@@ -58,6 +58,10 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".dailyverse.DailyVerseReceiver"
+            android:exported="false" />
+
         <service
             android:name=".lockscreen.service.LockScreenService"
             android:exported="false"

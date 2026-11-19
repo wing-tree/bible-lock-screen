@@ -60,6 +60,8 @@
     <string name="verse_order_daily">오늘의 말씀</string>
     <string name="verse_order_favorites">즐겨찾기만</string>
     <string name="verse_order_random">무작위</string>
+    <string name="daily_verse_notice">오늘의 말씀 알림</string>
+    <string name="daily_verse_time">알림 시각</string>
     <string name="verse_order_sequential">순서대로</string>
     <string name="version">버전</string>
     <string name="write_review">리뷰 쓰기</string>
