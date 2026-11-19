@@ -133,6 +133,7 @@
     <color name="space">#1F000000</color>
     <color name="splash_screen_icon">@color/secondary</color>
     <color name="subtitle">@color/medium_emphasis</color>
+    <color name="sub_text">#474747</color> <!-- 보조 번역. 본문(87%)과 medium(60%) 사이 약 72% -->
     <color name="system_ui">@color/primary_variant</color>
     <color name="text">@color/high_emphasis</color>
     <color name="title_text">@color/black</color>

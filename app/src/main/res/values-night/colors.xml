@@ -11,6 +11,7 @@
 
     <color name="high_emphasis">#DEFFFFFF</color>
     <color name="medium_emphasis">#99FFFFFF</color>
+    <color name="sub_text">#B8FFFFFF</color> <!-- 보조 번역(약 72%) -->
     <color name="disabled">#61FFFFFF</color>
 
     <color name="active">#DEFFFFFF</color>
