@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/verse_order_daily"
+        android:textColor="@color/sub_text"
+        android:textSize="@dimen/text_size_12dp" />
+
+    <TextView
+        android:id="@+id/text_view_word"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:fontFamily="serif"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_size_16dp"
+        android:text="@string/widget_preview_word" />
+
+    <TextView
+        android:id="@+id/text_view_reference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:fontFamily="serif"
+        android:textColor="@color/sub_text"
+        android:textSize="@dimen/text_size_14dp"
+        android:text="@string/widget_preview_reference" />
+
+</LinearLayout>

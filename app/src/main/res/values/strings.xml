@@ -61,6 +61,9 @@
     <string name="verse_order_random">Random</string>
     <string name="daily_verse_notice">Verse of the day notification</string>
     <string name="daily_verse_time">Notification time</string>
+    <string name="widget_description">Shows the verse of the day</string>
+    <string name="widget_preview_reference">John 3:16</string>
+    <string name="widget_preview_word">For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.</string>
     <string name="verse_order_sequential">In order</string>
     <string name="version">Version</string>
     <string name="write_review">Write review</string>

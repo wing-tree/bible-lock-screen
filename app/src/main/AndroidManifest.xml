@@ -62,6 +62,18 @@
             android:name=".dailyverse.DailyVerseReceiver"
             android:exported="false" />
 
+        <receiver
+            android:name=".dailyverse.DailyVerseWidget"
+            android:exported="false"
+            android:label="@string/verse_order_daily">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/daily_verse_widget_info" />
+        </receiver>
+
         <service
             android:name=".lockscreen.service.LockScreenService"
             android:exported="false"

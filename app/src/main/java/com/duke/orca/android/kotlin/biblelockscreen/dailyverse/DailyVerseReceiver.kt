@@ -16,6 +16,7 @@ class DailyVerseReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 DailyVerseNotice.post(context)
+                DailyVerseWidget.refresh(context)
             } catch (e: Exception) {
                 Timber.e(e)
             } finally {

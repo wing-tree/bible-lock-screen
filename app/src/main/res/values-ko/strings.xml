@@ -62,6 +62,9 @@
     <string name="verse_order_random">무작위</string>
     <string name="daily_verse_notice">오늘의 말씀 알림</string>
     <string name="daily_verse_time">알림 시각</string>
+    <string name="widget_description">오늘의 말씀을 보여 줍니다</string>
+    <string name="widget_preview_reference">요한복음 3:16</string>
+    <string name="widget_preview_word">하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 저를 믿는 자마다 멸망치 않고 영생을 얻게 하려 하심이니라</string>
     <string name="verse_order_sequential">순서대로</string>
     <string name="version">버전</string>
     <string name="write_review">리뷰 쓰기</string>

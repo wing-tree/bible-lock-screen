@@ -16,6 +16,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.application.constants.Applic
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.EXTRA_CONTENT
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.EXTRA_SIMPLE_NAME
 import com.duke.orca.android.kotlin.biblelockscreen.base.views.FragmentContainerActivity
+import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.Content
 import com.duke.orca.android.kotlin.biblelockscreen.bible.models.datamodels.DailyVerses
 import com.duke.orca.android.kotlin.biblelockscreen.bible.views.ChapterPagerFragment
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
@@ -80,18 +81,7 @@ object DailyVerseNotice {
             NotificationChannel(CHANNEL_ID, context.getString(R.string.daily_verse_notice), NotificationManager.IMPORTANCE_DEFAULT)
         )
 
-        val intent = Intent(context, FragmentContainerActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra(EXTRA_SIMPLE_NAME, ChapterPagerFragment::class.java.simpleName)
-            putExtra(EXTRA_CONTENT, item.content)
-        }
-
-        val contentIntent = PendingIntent.getActivity(
-            context,
-            LocalDate.now().toEpochDay().toInt(),
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val contentIntent = readerIntent(context, item.content)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_holy_bible_100px)
@@ -104,6 +94,22 @@ object DailyVerseNotice {
             .build()
 
         NotificationManagerCompat.from(context).notify(ID, notification)
+    }
+
+    // 읽기 화면을 그 구절에서 연다. 알림과 위젯이 함께 쓴다.
+    fun readerIntent(context: Context, content: Content): PendingIntent {
+        val intent = Intent(context, FragmentContainerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(EXTRA_SIMPLE_NAME, ChapterPagerFragment::class.java.simpleName)
+            putExtra(EXTRA_CONTENT, content)
+        }
+
+        return PendingIntent.getActivity(
+            context,
+            LocalDate.now().toEpochDay().toInt(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     private fun alarmIntent(context: Context): PendingIntent = PendingIntent.getBroadcast(

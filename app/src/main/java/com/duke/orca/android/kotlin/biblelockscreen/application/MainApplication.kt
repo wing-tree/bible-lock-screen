@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.duke.orca.android.kotlin.biblelockscreen.BuildConfig
 import com.duke.orca.android.kotlin.biblelockscreen.ad.NativeAds
 import com.duke.orca.android.kotlin.biblelockscreen.dailyverse.DailyVerseNotice
+import com.duke.orca.android.kotlin.biblelockscreen.dailyverse.DailyVerseWidget
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -25,6 +26,7 @@ class MainApplication : Application() {
 
         NativeAds.init(this)
         DailyVerseNotice.schedule(this)
+        DailyVerseWidget.refresh(this)
     }
 
     companion object {
