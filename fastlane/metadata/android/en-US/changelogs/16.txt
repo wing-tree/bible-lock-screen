@@ -1,0 +1,2 @@
+- Remove ads with a one-time purchase in the new Store (Settings > Store)
+- No ads for the first three days after installing
