@@ -83,4 +83,13 @@
     <string name="pattern_format_12_hour_002">h:mm:ss</string>
     <string name="previous_verse">Previous verse</string>
     <string name="next_verse">Next verse</string>
+    <string name="store">Store</string>
+    <string name="remove_ads">Remove ads</string>
+    <string name="remove_ads_summary">Removes ads from the lock screen and reader for good</string>
+    <string name="purchased">Purchased. Thank you!</string>
+    <string name="restore_purchases">Restore purchases</string>
+    <string name="restore_purchases_summary">Bring back a purchase made on another device</string>
+    <string name="purchases_restored">Your purchase has been restored.</string>
+    <string name="nothing_to_restore">No purchases to restore.</string>
+    <string name="store_unavailable">The store is not available right now. Please try again later.</string>
 </resources>

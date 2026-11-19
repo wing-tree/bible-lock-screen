@@ -8,6 +8,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.ad.NativeAds
 import com.duke.orca.android.kotlin.biblelockscreen.dailyverse.DailyVerseNotice
 import com.duke.orca.android.kotlin.biblelockscreen.dailyverse.DailyVerseWidget
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
+import com.duke.orca.android.kotlin.biblelockscreen.store.Billing
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -24,6 +25,7 @@ class MainApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
+        Billing.init(this)
         NativeAds.init(this)
         DailyVerseNotice.schedule(this)
         DailyVerseWidget.refresh(this)

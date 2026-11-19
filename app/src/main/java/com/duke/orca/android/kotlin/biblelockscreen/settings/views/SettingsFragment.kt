@@ -26,6 +26,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.SubDatabase
 import com.duke.orca.android.kotlin.biblelockscreen.review.Review
 import com.duke.orca.android.kotlin.biblelockscreen.settings.adapters.PreferenceAdapter.AdapterItem
+import com.duke.orca.android.kotlin.biblelockscreen.store.StoreFragment
 import java.lang.StringBuilder
 
 class SettingsFragment : PreferenceFragment(),
@@ -123,6 +124,18 @@ class SettingsFragment : PreferenceFragment(),
 
         preferenceAdapter.submitList(
             arrayListOf(
+                AdapterItem.Preference(
+                    drawable = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.round_shopping_bag_24
+                    ),
+                    summary = getString(R.string.remove_ads),
+                    onClick = {
+                        addFragment(StoreFragment())
+                    },
+                    body = getString(R.string.store)
+                ),
+                AdapterItem.Space(),
                 AdapterItem.Preference(
                     drawable = ContextCompat.getDrawable(
                         requireContext(),

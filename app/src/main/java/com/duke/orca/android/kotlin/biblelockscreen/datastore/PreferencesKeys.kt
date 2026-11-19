@@ -41,6 +41,7 @@ object PreferencesKeys {
     object Ad {
         private const val OBJECT_NAME = "Ad"
         val opens = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.opens")
+        val isAdFree = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isAdFree")
     }
 
     object Notice {

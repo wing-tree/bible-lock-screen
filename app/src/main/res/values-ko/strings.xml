@@ -78,4 +78,13 @@
     <string name="pattern_format_12_hour_002">h:mm:ss</string>
     <string name="previous_verse">이전 구절</string>
     <string name="next_verse">다음 구절</string>
+    <string name="store">상점</string>
+    <string name="remove_ads">광고 제거</string>
+    <string name="remove_ads_summary">잠금화면과 읽기 화면의 광고를 영구히 없앱니다</string>
+    <string name="purchased">구매했습니다. 감사합니다!</string>
+    <string name="restore_purchases">구매 복원</string>
+    <string name="restore_purchases_summary">다른 기기에서 산 상품을 되찾습니다</string>
+    <string name="purchases_restored">구매를 복원했습니다.</string>
+    <string name="nothing_to_restore">복원할 구매가 없습니다.</string>
+    <string name="store_unavailable">지금은 상점을 열 수 없습니다. 잠시 후 다시 시도해 주세요.</string>
 </resources>

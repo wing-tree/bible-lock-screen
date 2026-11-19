@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
 import com.duke.orca.android.kotlin.biblelockscreen.BuildConfig
+import com.duke.orca.android.kotlin.biblelockscreen.store.Billing
 import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAd
 import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAdListener
 import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit
 
 // 잠금화면 구절 카드에 섞는 네이티브 광고. 하나를 받아 두고, 꺼내 가면 바로 다음 것을 받는다.
 // 잠금화면을 OPEN_INTERVAL 번 열 때마다 첫 카드에, 한 판 안에서는 연 횟수와 상관없이 SWIPE_INTERVAL 장마다 붙인다.
-// 새로 설치하고 GRACE_PERIOD 동안은 네이티브·배너 모두 붙이지 않는다(처음 며칠의 이탈을 줄이려고).
+// 새로 설치하고 GRACE_PERIOD 동안과 광고 제거를 산 뒤에는 네이티브·배너 모두 붙이지 않는다.
 object NativeAds {
     private const val OPEN_INTERVAL = 3
     private const val SWIPE_INTERVAL = 7
@@ -37,9 +38,9 @@ object NativeAds {
 
     private var installedAt = 0L
 
-    // 설치한 지 GRACE_PERIOD 가 안 지났는지.
-    val isInGracePeriod: Boolean
-        get() = System.currentTimeMillis() - installedAt < GRACE_PERIOD
+    // 광고를 쉬는지. 설치한 지 GRACE_PERIOD 가 안 지났거나(처음 며칠의 이탈을 줄이려고) 광고 제거를 샀다.
+    val isHeld: Boolean
+        get() = System.currentTimeMillis() - installedAt < GRACE_PERIOD || Billing.isAdFree.value
 
     // 앱 키가 있어 광고를 쓰는지. SDK 초기화 전에도 연 횟수는 센다.
     private var enabled = false
@@ -82,6 +83,9 @@ object NativeAds {
     fun init(context: Context) {
         // 앱 키가 없으면 광고를 아예 붙이지 않는다.
         if (LevelPlayKeys.APP_KEY.isBlank()) return
+
+        // 광고 제거를 샀으면 SDK 도 켜지 않는다.
+        if (Billing.isAdFree.value) return
 
         this.context = context.applicationContext
         opens = DataStore.Ad.getOpens(context)
@@ -138,7 +142,7 @@ object NativeAds {
 
     // 첫 카드에 붙일 차례면 꺼내 준다.
     fun takeForOpen(): LevelPlayNativeAd? {
-        if (isInGracePeriod || opens < OPEN_INTERVAL) return null
+        if (isHeld || opens < OPEN_INTERVAL) return null
 
         return take()?.also { opens = 0 }
     }
@@ -146,7 +150,7 @@ object NativeAds {
     // 넘긴 방향의 다음 카드가 SWIPE_INTERVAL 장째면 꺼내 준다.
     // 다음에 넘기면 광고 카드에 닿아 0 이 되도록 -1 로 둔다.
     fun takeForSwipe(): LevelPlayNativeAd? {
-        if (isInGracePeriod || swipes < SWIPE_INTERVAL.dec()) return null
+        if (isHeld || swipes < SWIPE_INTERVAL.dec()) return null
 
         return take()?.also { swipes = -1 }
     }

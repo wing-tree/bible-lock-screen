@@ -199,6 +199,11 @@ object DataStore {
         fun getOpens(context: Context) = getInt(context, PreferencesKeys.Ad.opens, 0)
 
         fun putOpens(context: Context, value: Int) = putAsync(context, PreferencesKeys.Ad.opens, value)
+
+        // 광고 제거를 샀는지(Play 에 닿지 않아도 이 값으로 광고를 끈다).
+        fun isAdFree(context: Context) = getBoolean(context, PreferencesKeys.Ad.isAdFree, false)
+
+        fun putAdFree(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.Ad.isAdFree, value)
     }
 
     object Notice {

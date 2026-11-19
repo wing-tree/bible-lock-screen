@@ -1,5 +1,6 @@
 [versions]
 android-application = "9.5.0"
+android-billingclient-billing-ktx = "9.1.0"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.8.0"
 androidx-constraintlayout = "2.2.2"
@@ -35,6 +36,7 @@ unity3d-ads-mediation-unityads-adapter = "5.15.0"
 unity3d-ads-unity-ads = "4.21.0"
 
 [libraries]
+android-billingclient-billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "android-billingclient-billing-ktx" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
