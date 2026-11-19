@@ -174,6 +174,7 @@ object DataStore {
             const val SEQUENTIAL = 0 // 마지막으로 본 구절부터
             const val DAILY = 1 // 오늘의 말씀(엄선 구절 하루 하나)부터
             const val FAVORITES = 2 // 즐겨찾기한 구절만
+            const val RANDOM = 3 // 열 때마다 아무 구절에서(넘기면 앞뒤 구절)
         }
 
         suspend fun putVerseOrder(context: Context, value: Int) {

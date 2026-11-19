@@ -47,13 +47,15 @@ class VerseOrderChoiceDialogFragment : BaseListDialogFragment<TextAlignmentChoic
     override val items: Array<Int> = arrayOf(
         VerseOrder.SEQUENTIAL,
         VerseOrder.DAILY,
-        VerseOrder.FAVORITES
+        VerseOrder.FAVORITES,
+        VerseOrder.RANDOM
     )
 
     companion object {
         fun nameOf(verseOrder: Int): Int = when (verseOrder) {
             VerseOrder.DAILY -> R.string.verse_order_daily
             VerseOrder.FAVORITES -> R.string.verse_order_favorites
+            VerseOrder.RANDOM -> R.string.verse_order_random
             else -> R.string.verse_order_sequential
         }
     }

@@ -49,6 +49,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.abs
+import kotlin.random.Random
 
 @AndroidEntryPoint
 @RequireDeviceCredential
@@ -442,6 +443,7 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
                 viewModel.getFavoriteIds().takeIf { it.isNotEmpty() }?.let { versePagerAdapter.ids = it }
                 current
             }
+            DataStore.LockScreen.VerseOrder.RANDOM -> Random.nextInt(VERSE_COUNT)
             else -> current
         }
     }
