@@ -78,6 +78,8 @@ class DailyVerseWidget : AppWidgetProvider() {
             val reference = "${database.bibleBookDao().get().name(item.book)} ${item.chapter}:${item.verse}"
 
             val views = RemoteViews(context.packageName, R.layout.widget_daily_verse).apply {
+                // 런처는 시스템 언어로 그리므로 앱 언어로 고른 머리말을 직접 넣는다.
+                setTextViewText(R.id.text_view_title, context.getString(R.string.verse_order_daily))
                 setTextViewText(R.id.text_view_word, item.word)
                 setTextViewText(R.id.text_view_reference, reference)
                 setOnClickPendingIntent(R.id.root, DailyVerseNotice.readerIntent(context, item.content))

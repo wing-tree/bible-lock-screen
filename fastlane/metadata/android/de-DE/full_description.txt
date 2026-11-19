@@ -7,13 +7,18 @@ The Bible in You zeigt einen Bibelvers auf deinem Sperrbildschirm. So wird jeder
   - Vers des Tages: jeden Tag ein Vers aus 432 ausgewählten Bibelstellen
   - Der Reihe nach: die ganze Bibel lesen, von 1. Mose bis Offenbarung
   - Nur Favoriten: nur deine gespeicherten Verse
+  - Zufällig: jedes Mal ein neuer Vers aus der ganzen Bibel
 • Springe direkt vom Sperrbildschirm zu jedem Buch, Kapitel und Vers.
 • Den Sperrbildschirm kannst du jederzeit ein- und ausschalten.
+
+■ Widget und tägliche Erinnerung
+• Sieh den Vers des Tages als Widget auf dem Startbildschirm und blättere zu den Versen davor und danach
+• Erhalte den Vers des Tages als Benachrichtigung zu deiner Wunschzeit
 
 ■ Bibel lesen
 • Lutherbibel 1912 auf Deutsch
 • Parallelbibel: zwei Übersetzungen nebeneinander (z. B. Luther und King James)
-• Markiere Verse, setze Lesezeichen und speichere deine Lieblingsverse
+• Markiere Verse in sechs Farben und speichere deine Lieblingsverse, auch beim Wechsel der Übersetzung
 • Offline: die ganze Bibel ist auf deinem Handy, kein Internet nötig
 
 ■ Gottes Wort teilen
@@ -25,7 +30,7 @@ The Bible in You zeigt einen Bibelvers auf deinem Sperrbildschirm. So wird jeder
 • Suche direkt vom Sperrbildschirm aus
 
 ■ Angenehm lesen
-• Dunkelmodus
+• Dunkelmodus (wie das System oder nach Wahl)
 • Schriftgröße und Ausrichtung frei einstellbar
 
 ■ Übersetzungen
@@ -33,5 +38,6 @@ Luther 1912, Louis Segond 1910 (Französisch), King James Version, American King
 
 ■ Berechtigung
 • Über anderen Apps einblenden: nötig, um Verse auf dem Sperrbildschirm anzuzeigen.
+• Benachrichtigungen: nötig für die tägliche Vers-Erinnerung.
 
 Gottes Wort begleite dich jeden Tag.

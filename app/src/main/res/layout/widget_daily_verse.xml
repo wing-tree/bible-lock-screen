@@ -9,6 +9,7 @@
     android:padding="@dimen/padding_16dp">
 
     <TextView
+        android:id="@+id/text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/verse_order_daily"

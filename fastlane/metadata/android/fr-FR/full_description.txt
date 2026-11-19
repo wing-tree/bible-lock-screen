@@ -7,13 +7,18 @@ The Bible in You affiche un verset de la Bible sur votre écran de verrouillage.
   - Verset du jour : un verset par jour parmi 432 passages choisis
   - Dans l'ordre : lisez toute la Bible, de la Genèse à l'Apocalypse
   - Favoris : seulement les versets que vous avez enregistrés
+  - Aléatoire : un nouveau verset de toute la Bible à chaque fois
 • Allez à n'importe quel livre, chapitre et verset depuis l'écran de verrouillage.
 • Activez ou désactivez l'écran de verrouillage à tout moment.
+
+■ Widget et rappel quotidien
+• Affichez le verset du jour sur un widget de l'écran d'accueil et parcourez les versets voisins
+• Recevez le verset du jour en notification à l'heure de votre choix
 
 ■ Lire la Bible
 • Bible Louis Segond 1910 en français
 • Bible parallèle : deux traductions côte à côte (Louis Segond et King James, par exemple)
-• Surlignez, marquez et ajoutez vos versets préférés aux favoris
+• Surlignez en six couleurs et ajoutez vos versets préférés aux favoris, conservés même en changeant de traduction
 • Hors ligne : toute la Bible est sur votre téléphone, sans connexion
 
 ■ Partager la Parole
@@ -25,7 +30,7 @@ The Bible in You affiche un verset de la Bible sur votre écran de verrouillage.
 • Recherche possible directement depuis l'écran de verrouillage
 
 ■ Lecture confortable
-• Mode sombre
+• Mode sombre (selon le système ou à votre choix)
 • Taille du texte et alignement réglables
 
 ■ Traductions
@@ -33,5 +38,6 @@ Louis Segond 1910, Luther 1912 (allemand), King James Version, American King Jam
 
 ■ Autorisation
 • Superposition aux autres applications : nécessaire pour afficher les versets sur l'écran de verrouillage.
+• Notifications : nécessaires pour le rappel du verset du jour.
 
 Que la Parole de Dieu vous accompagne chaque jour.

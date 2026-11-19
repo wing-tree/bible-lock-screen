@@ -1,0 +1,8 @@
+- Home screen widget with the verse of the day and the verses around it
+- Daily verse notification at the time you choose
+- New 'Random' verse order for the lock screen
+- Highlight in one tap with six color pens
+- Favorites and highlights stay when you switch translations
+- Bookmarks are merged into favorites (existing bookmarks move over)
+- Dark mode can follow the system or be set by hand
+- Fixed a crash when searching after changing translations

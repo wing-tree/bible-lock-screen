@@ -7,13 +7,18 @@ The Bible in You shows a Bible verse on your lock screen, so the moments you pic
   - Verse of the day: one verse a day from 432 hand-picked passages
   - In order: read through the whole Bible, Genesis to Revelation
   - Favorites only: cycle through the verses you saved
+  - Random: a new verse from anywhere in the Bible each time
 • Jump to any book, chapter and verse right from the lock screen.
 • Turn the lock screen on or off at any time.
+
+■ Home screen widget and daily reminder
+• See the verse of the day on a home screen widget and step to the verses around it
+• Get the verse of the day as a notification at the time you choose
 
 ■ Read the Bible
 • 7 translations including the King James Version (KJV), American Standard Version (ASV), Louis Segond and Luther
 • Parallel Bible: read two translations side by side
-• Highlight, bookmark and favorite the verses that speak to you
+• Highlight in six colors and save favorites, kept even when you switch translations
 • Works offline: the whole Bible is on your phone, no internet needed
 
 ■ Share the Word
@@ -25,7 +30,7 @@ The Bible in You shows a Bible verse on your lock screen, so the moments you pic
 • Search right from the lock screen
 
 ■ Comfortable reading
-• Dark mode
+• Dark mode (follow the system or choose your own)
 • Adjustable font size and text alignment
 
 ■ Translations
@@ -33,5 +38,6 @@ King James Version (KJV), American King James Version (AKJV), American Standard 
 
 ■ Permission
 • Display over other apps: needed to show verses on the lock screen.
+• Notifications: needed for the daily verse reminder.
 
 May God's Word be with you every day.
