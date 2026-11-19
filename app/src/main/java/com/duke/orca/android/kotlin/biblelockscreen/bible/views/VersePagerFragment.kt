@@ -94,14 +94,20 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
 
     private var lastPosition = -1
 
-    // 넘긴 방향의 다음 카드(아직 안 보이는 카드)에 광고를 붙여, 넘기는 중에 갑자기 생기지 않게 한다.
-    // 처음 보이는 카드는 세지 않는다.
+    // 처음 보이는 카드는 열 때의 차례로, 그 뒤로는 넘긴 방향의 다음 카드(아직 안 보이는 카드)에 붙여
+    // 넘기는 중에 광고가 갑자기 생기지 않게 한다.
     private fun placeAd(position: Int) {
         val previous = lastPosition
 
         lastPosition = position
 
-        if (previous < 0 || previous == position) return
+        if (previous == position) return
+
+        if (previous < 0) {
+            NativeAds.onOpened()
+            placeFirstAd(position, FIRST_AD_ATTEMPTS)
+            return
+        }
 
         NativeAds.onSwiped()
 
@@ -109,13 +115,37 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
 
         if (next !in 0 until versePagerAdapter.itemCount) return
 
-        val fragment = childFragmentManager.findFragmentByTag("f${versePagerAdapter.getItemId(next)}") as? VerseFragment ?: return
-        val nativeAd = NativeAds.take() ?: return
+        val fragment = verseFragmentAt(next) ?: return
+        val nativeAd = NativeAds.takeForSwipe() ?: return
 
         if (fragment.showAd(nativeAd).not()) {
-            NativeAds.giveBack(nativeAd)
+            NativeAds.putBackForSwipe(nativeAd)
         }
     }
+
+    // 첫 카드는 막 만들어지는 중이라 구절이 보이고 자리를 잡을 때까지 잠깐씩 기다렸다가 붙인다.
+    private fun placeFirstAd(position: Int, attempts: Int) {
+        if (view == null || lastPosition != position) return
+
+        val fragment = verseFragmentAt(position)
+
+        if (fragment?.isReadyForAd != true) {
+            if (attempts > 0) {
+                viewBinding.viewPager2.postDelayed({ placeFirstAd(position, attempts.dec()) }, FIRST_AD_DELAY)
+            }
+
+            return
+        }
+
+        val nativeAd = NativeAds.takeForOpen() ?: return
+
+        if (fragment.showAd(nativeAd).not()) {
+            NativeAds.putBackForOpen(nativeAd)
+        }
+    }
+
+    private fun verseFragmentAt(position: Int) =
+        childFragmentManager.findFragmentByTag("f${versePagerAdapter.getItemId(position)}") as? VerseFragment
 
     private val onBackPressedCallback by lazy {
         object : OnBackPressedCallback(true) {
@@ -520,6 +550,10 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
 
     companion object {
         private const val PACKAGE_NAME = "${Application.PACKAGE_NAME}.bible.views"
+
+        // 첫 카드가 준비되길 기다리는 간격과 횟수(합쳐 약 3초).
+        private const val FIRST_AD_DELAY = 100L
+        private const val FIRST_AD_ATTEMPTS = 30
 
         private object Key {
             const val CHAPTER_PAGER = "$PACKAGE_NAME.CHAPTER_PAGER"

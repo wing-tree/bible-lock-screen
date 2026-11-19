@@ -194,20 +194,10 @@ object DataStore {
     }
 
     object Ad {
-        // 잠금화면 카드를 넘긴 횟수(앱이 다시 떠도 이어서 센다).
-        fun getSwipes(context: Context) = getInt(context, PreferencesKeys.Ad.swipes, 0)
+        // 잠금화면을 연 횟수(앱이 다시 떠도 이어서 센다).
+        fun getOpens(context: Context) = getInt(context, PreferencesKeys.Ad.opens, 0)
 
-        fun putSwipes(context: Context, value: Int) = putAsync(context, PreferencesKeys.Ad.swipes, value)
-
-        // 네이티브 광고를 보인 날(epoch day)과 그날 보인 횟수.
-        fun getShownDay(context: Context) = get(context, PreferencesKeys.Ad.shownDay, 0L)
-
-        fun getShownCount(context: Context) = getInt(context, PreferencesKeys.Ad.shownCount, 0)
-
-        fun putShown(context: Context, day: Long, count: Int) {
-            putAsync(context, PreferencesKeys.Ad.shownDay, day)
-            putAsync(context, PreferencesKeys.Ad.shownCount, count)
-        }
+        fun putOpens(context: Context, value: Int) = putAsync(context, PreferencesKeys.Ad.opens, value)
     }
 
     object Record {

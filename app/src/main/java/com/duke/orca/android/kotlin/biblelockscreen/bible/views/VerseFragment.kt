@@ -187,6 +187,10 @@ class VerseFragment : BaseFragment<FragmentVerseBinding>(),
         }
     }
 
+    // 구절이 보이고 자리를 잡아, 광고를 붙일지 잴 수 있는지.
+    val isReadyForAd: Boolean
+        get() = view != null && nativeAd == null && viewBinding.nestedScrollView.isVisible && viewBinding.nestedScrollView.height > 0
+
     // 구절 아래 빈자리에 광고가 들어갈 때만 붙인다. 구절이 길어 자리가 없으면 false 를 돌려 다음 카드로 미룬다.
     fun showAd(nativeAd: LevelPlayNativeAd): Boolean {
         val binding = viewBinding

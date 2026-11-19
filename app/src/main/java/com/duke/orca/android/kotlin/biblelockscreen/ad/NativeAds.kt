@@ -15,15 +15,12 @@ import com.unity3d.mediation.LevelPlayInitError
 import com.unity3d.mediation.LevelPlayInitListener
 import com.unity3d.mediation.LevelPlayInitRequest
 import timber.log.Timber
-import java.time.LocalDate
 
-// 잠금화면 구절 카드에 가끔 섞는 네이티브 광고. 하나를 미리 받아 두었다가, 넘긴 횟수가 차면 다음 카드에 붙인다.
+// 잠금화면 구절 카드에 섞는 네이티브 광고. 하나를 받아 두고, 꺼내 가면 바로 다음 것을 받는다.
+// 잠금화면을 OPEN_INTERVAL 번 열 때마다 첫 카드에, 한 판 안에서는 연 횟수와 상관없이 SWIPE_INTERVAL 장마다 붙인다.
 object NativeAds {
-    // 이만큼 넘길 때마다 한 번. 잠금화면은 몇 장 보고 바로 푸는 일이 많아 너무 길면 거의 안 나온다.
-    const val INTERVAL = 7
-
-    // 하루에 보이는 최대 횟수. 성경 앱이라 너무 잦지 않게 막는다.
-    private const val DAILY_LIMIT = 10
+    private const val OPEN_INTERVAL = 3
+    private const val SWIPE_INTERVAL = 7
 
     private const val RETRY_DELAY = 60_000L
 
@@ -35,18 +32,28 @@ object NativeAds {
     var isInitialized = false
         private set
 
+    // 앱 키가 있어 광고를 쓰는지. SDK 초기화 전에도 연 횟수는 센다.
+    private var enabled = false
+
     private var loading = false
     private var ready: LevelPlayNativeAd? = null
-    private var swipes = 0
+
+    // 잠금화면을 연 횟수(앱이 다시 떠도 이어서 센다).
+    private var opens = 0
         set(value) {
             field = value
-            DataStore.Ad.putSwipes(context, value)
+            DataStore.Ad.putOpens(context, value)
         }
+
+    // 이번 판의 첫 카드(또는 마지막 광고 카드)에서 몇 장 넘어왔는지.
+    private var swipes = 0
 
     private val listener = object : LevelPlayNativeAdListener {
         override fun onAdLoaded(nativeAd: LevelPlayNativeAd?, adInfo: AdInfo?) {
             loading = false
-            ready = nativeAd
+
+            // 받는 사이에 못 보인 광고를 돌려받았으면 그걸 먼저 쓰고 새 것은 버린다.
+            if (ready == null) ready = nativeAd else nativeAd?.destroyAd()
         }
 
         override fun onAdLoadFailed(nativeAd: LevelPlayNativeAd?, error: IronSourceError?) {
@@ -58,7 +65,6 @@ object NativeAds {
 
         override fun onAdImpression(nativeAd: LevelPlayNativeAd?, adInfo: AdInfo?) {
             nativeAd?.let { impressed.add(it) }
-            DataStore.Ad.putShown(context, LocalDate.now().toEpochDay(), shownToday().inc())
         }
 
         override fun onAdClicked(nativeAd: LevelPlayNativeAd?, adInfo: AdInfo?) = Unit
@@ -69,7 +75,8 @@ object NativeAds {
         if (LevelPlayKeys.APP_KEY.isBlank()) return
 
         this.context = context.applicationContext
-        swipes = DataStore.Ad.getSwipes(context)
+        opens = DataStore.Ad.getOpens(context)
+        enabled = true
 
         if (BuildConfig.DEBUG) {
             LevelPlay.setAdaptersDebug(true)
@@ -103,37 +110,59 @@ object NativeAds {
             .loadAd()
     }
 
-    fun onSwiped() {
-        if (isInitialized.not()) return
+    // 잠금화면이 새로 열렸다.
+    fun onOpened() {
+        if (enabled.not()) return
 
+        opens++
+        swipes = 0
+    }
+
+    fun onSwiped() {
         swipes++
     }
 
-    // 넘긴 횟수가 찼고, 오늘 상한이 남았고, 받아 둔 광고가 있을 때만 꺼내 준다.
-    fun take(): LevelPlayNativeAd? {
-        if (swipes < INTERVAL) return null
+    // 첫 카드에 붙일 차례면 꺼내 준다.
+    fun takeForOpen(): LevelPlayNativeAd? {
+        if (opens < OPEN_INTERVAL) return null
 
-        if (shownToday() >= DAILY_LIMIT) return null
+        return take()?.also { opens = 0 }
+    }
 
+    // 넘긴 방향의 다음 카드가 SWIPE_INTERVAL 장째면 꺼내 준다.
+    // 다음에 넘기면 광고 카드에 닿아 0 이 되도록 -1 로 둔다.
+    fun takeForSwipe(): LevelPlayNativeAd? {
+        if (swipes < SWIPE_INTERVAL.dec()) return null
+
+        return take()?.also { swipes = -1 }
+    }
+
+    private fun take(): LevelPlayNativeAd? {
         val nativeAd = ready ?: return null
 
         ready = null
-        swipes = 0
+        load()
 
         return nativeAd
     }
 
-    // 오늘 실제로 보인(노출된) 횟수.
-    private fun shownToday(): Int =
-        if (DataStore.Ad.getShownDay(context) == LocalDate.now().toEpochDay()) DataStore.Ad.getShownCount(context) else 0
+    // 카드에 자리가 없어 못 붙였다. 차례를 되돌려 다음 열기(또는 다음 카드)에 다시 쓴다.
+    fun putBackForOpen(nativeAd: LevelPlayNativeAd) {
+        opens = OPEN_INTERVAL
+        giveBack(nativeAd)
+    }
 
-    // 카드가 사라질 때 돌려받는다. 보인 광고는 버리고 새로 받고, 못 보인 광고는 다음 차례에 다시 쓴다.
+    fun putBackForSwipe(nativeAd: LevelPlayNativeAd) {
+        swipes = SWIPE_INTERVAL.dec()
+        giveBack(nativeAd)
+    }
+
+    // 카드가 사라질 때 돌려받는다. 보인 광고는 버리고, 못 보인 광고는 다음 차례에 다시 쓴다.
     fun giveBack(nativeAd: LevelPlayNativeAd) {
         if (impressed.remove(nativeAd) || ready != null) {
             nativeAd.destroyAd()
         } else {
             ready = nativeAd
-            swipes = INTERVAL
         }
 
         load()

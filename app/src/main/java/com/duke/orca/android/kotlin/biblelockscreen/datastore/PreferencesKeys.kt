@@ -40,9 +40,7 @@ object PreferencesKeys {
 
     object Ad {
         private const val OBJECT_NAME = "Ad"
-        val swipes = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.swipes")
-        val shownDay = longPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.shownDay")
-        val shownCount = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.shownCount")
+        val opens = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.opens")
     }
 
     object Record {
