@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.*
 import androidx.viewpager2.widget.ViewPager2
 import com.duke.orca.android.kotlin.biblelockscreen.R
+import com.duke.orca.android.kotlin.biblelockscreen.ad.BannerAds
 import com.duke.orca.android.kotlin.biblelockscreen.application.*
 import com.duke.orca.android.kotlin.biblelockscreen.application.constants.*
 import com.duke.orca.android.kotlin.biblelockscreen.base.viewmodels.FragmentContainerViewModel
@@ -28,6 +29,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.datastore.DataStore
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.Database
 import com.duke.orca.android.kotlin.biblelockscreen.persistence.database.SubDatabase
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.FontSettingsBottomSheetDialogFragment
+import com.unity3d.mediation.banner.LevelPlayBannerAdView
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.TranslationSelectionDialogFragment
 import com.duke.orca.android.kotlin.biblelockscreen.widget.DropdownMenu
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +45,8 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
     TranslationSelectionDialogFragment.OnClickListener
 {
     override val toolbar: Toolbar by lazy { viewBinding.toolbar }
+
+    private var bannerAdView: LevelPlayBannerAdView? = null
 
     private val activityViewModel by activityViewModels<FragmentContainerViewModel>()
     private val viewModel by viewModels<ChapterPagerViewModel>()
@@ -94,6 +98,8 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
         super.onViewCreated(view, savedInstanceState)
         bind()
         observe()
+
+        bannerAdView = BannerAds.attach(viewBinding.frameLayoutBanner)
 
         setFragmentResultListener(RequestKey.HIGHLIGHTS_FRAGMENT) { _, bundle ->
             val verse = BundleCompat.getParcelable(bundle, Key.CONTENT, Content::class.java)
@@ -215,6 +221,12 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
 
             dialogFragment.dismiss()
         }
+    }
+
+    override fun onDestroyView() {
+        bannerAdView?.destroy()
+        bannerAdView = null
+        super.onDestroyView()
     }
 
     private fun clear() {

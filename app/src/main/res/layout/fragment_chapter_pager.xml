@@ -176,80 +176,96 @@
         app:hideOnScroll="true"
         app:layout_scrollFlags="scroll">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:padding="@dimen/padding_8dp">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/image_view_highlight"
-                android:layout_width="@dimen/width_40dp"
-                android:layout_height="@dimen/height_40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/padding_8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_highlight_64px"
-                app:tint="@color/icon"
-                tools:ignore="ContentDescription"/>
-
-            <ImageView
-                android:id="@+id/image_view_bookmarks"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/padding_8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/image_view_highlight"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_round_bookmarks_24"
-                app:tint="@color/icon"
-                tools:ignore="ContentDescription" />
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:padding="@dimen/padding_8dp">
 
-            <ImageView
-                android:id="@+id/image_view_favorites"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/image_view_highlight"
+                    android:layout_width="@dimen/width_40dp"
+                    android:layout_height="@dimen/height_40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="@dimen/padding_8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_highlight_64px"
+                    app:tint="@color/icon"
+                    tools:ignore="ContentDescription"/>
+
+                <ImageView
+                    android:id="@+id/image_view_bookmarks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="@dimen/padding_8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/image_view_highlight"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_round_bookmarks_24"
+                    app:tint="@color/icon"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@+id/image_view_favorites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="@dimen/padding_8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/image_view_bookmarks"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_round_favorite_24"
+                    app:tint="@color/icon"
+                    tools:ignore="ContentDescription"/>
+
+                <ImageView
+                    android:id="@+id/image_view_font"
+                    android:layout_width="@dimen/width_40dp"
+                    android:layout_height="@dimen/height_40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="@dimen/padding_8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/image_view_dark_mode"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_round_text_format_24"
+                    app:tint="@color/icon"
+                    tools:ignore="ContentDescription"/>
+
+                <ImageView
+                    android:id="@+id/image_view_dark_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="@dimen/padding_8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_round_light_mode_24"
+                    app:tint="@color/icon"
+                    tools:ignore="ContentDescription"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 배너 광고 자리. 광고를 받으면 보인다(ad/BannerAds). -->
+            <FrameLayout
+                android:id="@+id/frame_layout_banner"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/padding_8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/image_view_bookmarks"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_round_favorite_24"
-                app:tint="@color/icon"
-                tools:ignore="ContentDescription"/>
+                android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/image_view_font"
-                android:layout_width="@dimen/width_40dp"
-                android:layout_height="@dimen/height_40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/padding_8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/image_view_dark_mode"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_round_text_format_24"
-                app:tint="@color/icon"
-                tools:ignore="ContentDescription"/>
-
-            <ImageView
-                android:id="@+id/image_view_dark_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/padding_8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_round_light_mode_24"
-                app:tint="@color/icon"
-                tools:ignore="ContentDescription"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
