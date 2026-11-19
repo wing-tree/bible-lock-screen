@@ -49,6 +49,12 @@ object PreferencesKeys {
         val dailyVerseHour = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.dailyVerseHour")
     }
 
+    object Widget {
+        private const val OBJECT_NAME = "Widget"
+        val offset = intPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.offset")
+        val day = longPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.day")
+    }
+
     object Record {
         private const val OBJECT_NAME = "Record"
         val isMerged = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isMerged")

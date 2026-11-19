@@ -214,6 +214,17 @@ object DataStore {
         fun putDailyVerseHour(context: Context, value: Int) = putAsync(context, PreferencesKeys.Notice.dailyVerseHour, value)
     }
 
+    object Widget {
+        // 위젯에서 오늘의 말씀으로부터 몇 구절 옮겨 갔는지. 그날(epoch day)이 지나면 0 으로 본다.
+        fun getOffset(context: Context, today: Long): Int =
+            if (get(context, PreferencesKeys.Widget.day, 0L) == today) getInt(context, PreferencesKeys.Widget.offset, 0) else 0
+
+        fun putOffset(context: Context, today: Long, value: Int) {
+            putAsync(context, PreferencesKeys.Widget.day, today)
+            putAsync(context, PreferencesKeys.Widget.offset, value)
+        }
+    }
+
     object Record {
         // 옛 번역본 DB 들의 표시를 기록 저장소로 한 번 모았는지.
         fun isMerged(context: Context) = getBoolean(context, PreferencesKeys.Record.isMerged, false)
