@@ -176,10 +176,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(),
         }
     }
 
-    override fun onBookmarkClick(id: Int, bookmark: Boolean) {
-        viewModel.updateBookmark(id, bookmark)
-    }
-
     override fun onFavoriteClick(id: Int, favorite: Boolean) {
         viewModel.updateFavorite(id, favorite)
     }

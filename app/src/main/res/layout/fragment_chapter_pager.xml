@@ -65,6 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_4dp"
                         android:fontFamily="@font/font_family_nanum_myeongjo"
+                        android:textColor="@color/sub_text"
                         android:textSize="@dimen/text_size_14dp"
                         android:textStyle="bold"
                         tools:text="King James Version"
@@ -204,26 +205,13 @@
                     tools:ignore="ContentDescription"/>
 
                 <ImageView
-                    android:id="@+id/image_view_bookmarks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="@dimen/padding_8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/image_view_highlight"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_round_bookmarks_24"
-                    app:tint="@color/icon"
-                    tools:ignore="ContentDescription" />
-
-                <ImageView
                     android:id="@+id/image_view_favorites"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="@dimen/padding_8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/image_view_bookmarks"
+                    app:layout_constraintStart_toEndOf="@id/image_view_highlight"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_round_favorite_24"
                     app:tint="@color/icon"

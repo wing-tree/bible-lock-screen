@@ -41,11 +41,6 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun updateBookmark(id: Int, bookmark: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            verseRepository.updateBookmark(id, bookmark)
-        }
-    }
 
     fun updateFavorites(id: Int, favorite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {

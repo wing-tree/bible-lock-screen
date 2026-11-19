@@ -30,21 +30,6 @@
             tools:text="150" />
 
         <com.like.LikeButton
-            android:id="@+id/like_button_bookmark"
-            android:layout_width="@dimen/width_40dp"
-            android:layout_height="@dimen/height_40dp"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/like_button_favorite"
-            app:circle_end_color="@color/circle_end"
-            app:circle_start_color="@color/circle_start"
-            app:dots_primary_color="@color/dots_primary"
-            app:dots_secondary_color="@color/dots_secondary"
-            app:icon_size="@dimen/width_24dp"
-            app:icon_type="heart"
-            app:like_drawable="@drawable/ic_bookmark_like_24"
-            app:unlike_drawable="@drawable/ic_bookmark_unlike_24" />
-
-        <com.like.LikeButton
             android:id="@+id/like_button_favorite"
             android:layout_width="@dimen/width_40dp"
             android:layout_height="@dimen/height_40dp"

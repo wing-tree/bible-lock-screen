@@ -146,8 +146,6 @@
     <color name="dots_primary">@color/pink_300</color>
     <color name="dots_secondary">@color/yellow_300</color>
 
-    <color name="bookmarked">@color/secondary</color>
-    <color name="unbookmarked">#9E9E9E</color>
 
     <color name="unhighlighted">#9E9E9E</color>
 

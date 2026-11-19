@@ -32,7 +32,6 @@
     <color name="title_text">@color/white</color>
     <color name="toolbar">@color/primary</color>
 
-    <color name="unbookmarked">#61FFFFFF</color>
 
     <color name="unhighlighted">#61FFFFFF</color>
 </resources>

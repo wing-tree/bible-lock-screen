@@ -110,15 +110,6 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
             }
         }
 
-        setFragmentResultListener(RequestKey.BOOKMARKS_FRAGMENT) { _, bundle ->
-            val verse = BundleCompat.getParcelable(bundle, Key.CONTENT, Content::class.java)
-
-            verse?.let {
-                clear()
-                setup(it.book, it.chapter, it.verse)
-            }
-        }
-
         setFragmentResultListener(RequestKey.FAVORITES_FRAGMENT) { _, bundle ->
             val verse = BundleCompat.getParcelable(bundle, Key.CONTENT, Content::class.java)
 
@@ -315,10 +306,6 @@ class ChapterPagerFragment : BaseFragment<FragmentChapterPagerBinding>(),
 
             imageViewHighlight.setOnClickListener {
                 addFragment(HighlightsFragment.newInstance(true))
-            }
-
-            imageViewBookmarks.setOnClickListener {
-                addFragment(BookmarksFragment.newInstance(true))
             }
 
             imageViewFavorites.setOnClickListener {

@@ -24,6 +24,12 @@ internal class MarkSync(context: Context, private val fileName: String) : RoomDa
                 DataStore.Record.putMerged(context, true)
             }
 
+            // 북마크 기능을 뺐다. 모은 뒤에 한 번, 북마크를 즐겨찾기로 옮긴다.
+            if (DataStore.Record.isBookmarkMoved(context).not()) {
+                markDao.moveBookmarksToFavorites()
+                DataStore.Record.putBookmarkMoved(context, true)
+            }
+
             val marks = markDao.getAll()
 
             db.beginTransaction()

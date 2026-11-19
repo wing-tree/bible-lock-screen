@@ -50,7 +50,6 @@ class ChapterFragment : ViewStubFragment(),
                 ) {
                     when(optionsItem) {
                         is WordAdapter.OptionsItem.Highlight -> viewModel.updateHighlightColor(item.id, optionsItem.highlightColor)
-                        is WordAdapter.OptionsItem.Bookmark -> viewModel.updateBookmark(item.id, optionsItem.liked)
                         is WordAdapter.OptionsItem.Favorite -> viewModel.updateFavorite(item.id, optionsItem.liked)
                         is WordAdapter.OptionsItem.More -> {
                             OptionChoiceDialogFragment.newInstance(options, item.content).also {

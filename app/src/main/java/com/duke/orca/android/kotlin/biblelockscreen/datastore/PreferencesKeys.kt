@@ -46,6 +46,7 @@ object PreferencesKeys {
     object Record {
         private const val OBJECT_NAME = "Record"
         val isMerged = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isMerged")
+        val isBookmarkMoved = booleanPreferencesKey("$PACKAGE_NAME.$OBJECT_NAME.isBookmarkMoved")
     }
 
     object LockScreen {

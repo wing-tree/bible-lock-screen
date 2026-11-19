@@ -13,6 +13,10 @@ abstract class MarkDao {
     @Query("SELECT * FROM mark")
     abstract fun getAll(): List<Mark>
 
+    // 북마크를 빼면서 남은 북마크를 즐겨찾기로 옮긴다.
+    @Query("UPDATE mark SET favorite = 1, bookmark = 0 WHERE bookmark != 0")
+    abstract fun moveBookmarksToFavorites()
+
     @Query("SELECT * FROM mark WHERE book = :book AND chapter = :chapter AND verse = :verse LIMIT 1")
     abstract fun get(book: Int, chapter: Int, verse: Int): Mark?
 

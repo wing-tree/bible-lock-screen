@@ -78,7 +78,7 @@
         tools:text="1" />
 
     <com.like.LikeButton
-        android:id="@+id/like_button_bookmark"
+        android:id="@+id/like_button_favorite"
         android:layout_width="@dimen/width_24dp"
         android:layout_height="@dimen/height_24dp"
         android:layout_marginTop="@dimen/margin_24dp"
@@ -92,25 +92,6 @@
         app:icon_type="heart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_word"
-        app:like_drawable="@drawable/ic_bookmark_like_24"
-        app:unlike_drawable="@drawable/ic_bookmark_unlike_24" />
-
-    <com.like.LikeButton
-        android:id="@+id/like_button_favorite"
-        android:layout_width="@dimen/width_24dp"
-        android:layout_height="@dimen/height_24dp"
-        android:layout_marginStart="@dimen/margin_16dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:circle_end_color="@color/circle_end"
-        app:circle_start_color="@color/circle_start"
-        app:dots_primary_color="@color/dots_primary"
-        app:dots_secondary_color="@color/dots_secondary"
-        app:icon_size="@dimen/width_24dp"
-        app:icon_type="heart"
-        app:layout_constraintBottom_toBottomOf="@+id/like_button_bookmark"
-        app:layout_constraintStart_toEndOf="@+id/like_button_bookmark"
-        app:layout_constraintTop_toTopOf="@+id/like_button_bookmark"
         app:like_drawable="@drawable/ic_favorite_like_24"
         app:unlike_drawable="@drawable/ic_favorite_unlike_24" />
 

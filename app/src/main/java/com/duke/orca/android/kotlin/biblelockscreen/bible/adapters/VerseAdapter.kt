@@ -31,7 +31,6 @@ class VerseAdapter(
     private var color = 0
 
     interface OnIconClickListener {
-        fun onBookmarkClick(id: Int, bookmark: Boolean)
         fun onFavoriteClick(id: Int, favorite: Boolean)
         fun onMoreVertClick(item: AdapterItem.Verse)
     }
@@ -93,17 +92,6 @@ class VerseAdapter(
                                 color
                             )
                         }
-
-                        viewBinding.likeButtonBookmark.isLiked = item.bookmark
-                        viewBinding.likeButtonBookmark.setOnLikeListener(object : OnLikeListener {
-                            override fun liked(likeButton: LikeButton?) {
-                                onIconClickListener?.onBookmarkClick(item.id, true)
-                            }
-
-                            override fun unLiked(likeButton: LikeButton?) {
-                                onIconClickListener?.onBookmarkClick(item.id, true)
-                            }
-                        })
 
                         viewBinding.likeButtonFavorite.isLiked = item.favorite
                         viewBinding.likeButtonFavorite.setOnLikeListener(object : OnLikeListener {

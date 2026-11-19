@@ -205,6 +205,11 @@ object DataStore {
         fun isMerged(context: Context) = getBoolean(context, PreferencesKeys.Record.isMerged, false)
 
         fun putMerged(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.Record.isMerged, value)
+
+        // 북마크를 즐겨찾기로 한 번 옮겼는지.
+        fun isBookmarkMoved(context: Context) = getBoolean(context, PreferencesKeys.Record.isBookmarkMoved, false)
+
+        fun putBookmarkMoved(context: Context, value: Boolean) = putAsync(context, PreferencesKeys.Record.isBookmarkMoved, value)
     }
 
     object Translation {

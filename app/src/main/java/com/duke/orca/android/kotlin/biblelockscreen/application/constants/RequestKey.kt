@@ -5,7 +5,6 @@ private const val PACKAGE_NAME = "${Application.PACKAGE_NAME}.application.consta
 object RequestKey {
     private const val OBJECT_NAME = "RequestKey"
 
-    const val BOOKMARKS_FRAGMENT = "$PACKAGE_NAME.$OBJECT_NAME.BOOKMARKS_FRAGMENT"
     const val FAVORITES_FRAGMENT = "$PACKAGE_NAME.$OBJECT_NAME.FAVORITES_FRAGMENT"
     const val HIGHLIGHTS_FRAGMENT = "$PACKAGE_NAME.$OBJECT_NAME.HIGHLIGHTS_FRAGMENT"
 }

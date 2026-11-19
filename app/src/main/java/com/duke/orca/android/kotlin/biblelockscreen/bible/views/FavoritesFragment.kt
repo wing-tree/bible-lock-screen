@@ -107,10 +107,6 @@ class FavoritesFragment : BaseFragment<FragmentFavoritesBinding>(),
         }
     }
 
-    override fun onBookmarkClick(id: Int, bookmark: Boolean) {
-        viewModel.updateBookmark(id, bookmark)
-    }
-
     override fun onFavoriteClick(id: Int, favorite: Boolean) {
         viewModel.updateFavorites(id, favorite)
     }

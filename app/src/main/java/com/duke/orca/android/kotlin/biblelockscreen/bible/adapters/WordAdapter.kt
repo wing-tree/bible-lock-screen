@@ -286,24 +286,6 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
                 onOptionsItemSelectedListener?.onOptionsItemSelected(item, OptionsItem.Highlight(0))
             }
 
-            likeButtonBookmark.isLiked = item.bookmark
-
-            likeButtonBookmark.setOnLikeListener(object : OnLikeListener {
-                override fun liked(likeButton: LikeButton?) {
-                    onOptionsItemSelectedListener?.onOptionsItemSelected(
-                        item,
-                        OptionsItem.Bookmark(true)
-                    )
-                }
-
-                override fun unLiked(likeButton: LikeButton?) {
-                    onOptionsItemSelectedListener?.onOptionsItemSelected(
-                        item,
-                        OptionsItem.Bookmark(false)
-                    )
-                }
-            })
-
             likeButtonFavorite.isLiked = item.favorite
 
             likeButtonFavorite.setOnLikeListener(object : OnLikeListener {
@@ -369,7 +351,6 @@ class WordAdapter(context: Context) : ListAdapter<WordAdapter.AdapterItem, WordA
 
     sealed class OptionsItem {
         class Highlight(@ColorInt val highlightColor: Int) : OptionsItem()
-        class Bookmark(val liked: Boolean) : OptionsItem()
         class Favorite(val liked: Boolean) : OptionsItem()
         object More : OptionsItem()
     }
