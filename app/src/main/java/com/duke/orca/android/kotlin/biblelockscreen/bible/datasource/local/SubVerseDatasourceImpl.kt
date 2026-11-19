@@ -7,8 +7,12 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import javax.inject.Provider
 
-class SubVerseDatasourceImpl @Inject constructor(private val database: SubDatabase) : VerseDatasource {
+class SubVerseDatasourceImpl @Inject constructor(private val databaseProvider: Provider<SubDatabase>) : VerseDatasource {
+    // 번역본을 바꾸면 DB 가 새로 갈아 끼워지고 옛 DB 는 닫히므로, 쓸 때마다 지금 DB 를 받는다.
+    private val database: SubDatabase get() = databaseProvider.get()
+
     override fun get(id: Int): Flow<Verse> {
         return database.verseDao().get(id)
     }

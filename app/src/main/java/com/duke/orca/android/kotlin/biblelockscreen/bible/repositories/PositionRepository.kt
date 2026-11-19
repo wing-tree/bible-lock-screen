@@ -13,7 +13,7 @@ interface PositionRepository {
         fun from(context: Context): PositionRepository {
             val applicationContext = context.applicationContext
 
-            return with(PositionDatasourceImpl(Database.getInstance(applicationContext))) {
+            return with(PositionDatasourceImpl { Database.getInstance(applicationContext) }) {
                 PositionRepositoryImpl(this)
             }
         }

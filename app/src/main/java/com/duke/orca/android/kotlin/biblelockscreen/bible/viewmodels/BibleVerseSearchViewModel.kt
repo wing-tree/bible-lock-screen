@@ -24,8 +24,10 @@ class BibleVerseSearchViewModel @Inject constructor(
 
     fun search(text: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            val verses = verseRepository.search(text).first()
+
             withContext(Dispatchers.Main) {
-                _searchResult.value = SearchResult(verseRepository.search(text).first(), text)
+                _searchResult.value = SearchResult(verses, text)
             }
         }
     }

@@ -9,12 +9,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import javax.inject.Provider
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object BookModule {
     @Provides
-    fun provideBookDatasource(database: Database): BookDatasource {
+    fun provideBookDatasource(database: Provider<Database>): BookDatasource {
         return BookDatasourceImpl(database)
     }
 

@@ -9,12 +9,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import javax.inject.Provider
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object PositionModule {
     @Provides
-    fun providePositionDatasource(database: Database): PositionDatasource {
+    fun providePositionDatasource(database: Provider<Database>): PositionDatasource {
         return PositionDatasourceImpl(database)
     }
 

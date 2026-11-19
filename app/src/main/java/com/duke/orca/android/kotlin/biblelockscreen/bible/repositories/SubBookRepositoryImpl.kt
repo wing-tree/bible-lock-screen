@@ -17,7 +17,7 @@ class SubBookRepositoryImpl @Inject constructor(private val datasource: BookData
         fun from(application: Application): BookRepository? {
             val database = SubDatabase.getInstance(application) ?: return null
 
-            return SubBookRepositoryImpl(SubBookDatasourceImpl(database))
+            return SubBookRepositoryImpl(SubBookDatasourceImpl { SubDatabase.getInstance(application) ?: database })
         }
     }
 }

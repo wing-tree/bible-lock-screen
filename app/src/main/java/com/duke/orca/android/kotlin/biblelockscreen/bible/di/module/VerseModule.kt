@@ -10,12 +10,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import javax.inject.Provider
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object VerseModule {
     @Provides
-    fun provideVerseDatasource(database: Database, recordDatabase: RecordDatabase): VerseDatasource {
+    fun provideVerseDatasource(database: Provider<Database>, recordDatabase: RecordDatabase): VerseDatasource {
         return VerseDatasourceImpl(database, recordDatabase)
     }
 

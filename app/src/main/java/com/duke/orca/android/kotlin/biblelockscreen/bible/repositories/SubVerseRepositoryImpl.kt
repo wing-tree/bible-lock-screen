@@ -64,7 +64,7 @@ class SubVerseRepositoryImpl @Inject constructor(private val datasource: VerseDa
         fun from(application: Application): VerseRepository? {
             val database = SubDatabase.getInstance(application) ?: return null
 
-            return SubVerseRepositoryImpl(SubVerseDatasourceImpl(database))
+            return SubVerseRepositoryImpl(SubVerseDatasourceImpl { SubDatabase.getInstance(application) ?: database })
         }
     }
 }
