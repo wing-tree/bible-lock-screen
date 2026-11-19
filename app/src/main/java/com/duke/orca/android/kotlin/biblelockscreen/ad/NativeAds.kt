@@ -15,14 +15,17 @@ import com.unity3d.mediation.LevelPlayInitError
 import com.unity3d.mediation.LevelPlayInitListener
 import com.unity3d.mediation.LevelPlayInitRequest
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 // 잠금화면 구절 카드에 섞는 네이티브 광고. 하나를 받아 두고, 꺼내 가면 바로 다음 것을 받는다.
 // 잠금화면을 OPEN_INTERVAL 번 열 때마다 첫 카드에, 한 판 안에서는 연 횟수와 상관없이 SWIPE_INTERVAL 장마다 붙인다.
+// 새로 설치하고 GRACE_PERIOD 동안은 네이티브·배너 모두 붙이지 않는다(처음 며칠의 이탈을 줄이려고).
 object NativeAds {
     private const val OPEN_INTERVAL = 3
     private const val SWIPE_INTERVAL = 7
 
     private const val RETRY_DELAY = 60_000L
+    private val GRACE_PERIOD = TimeUnit.DAYS.toMillis(3)
 
     private val handler = Handler(Looper.getMainLooper())
     private val impressed = mutableSetOf<LevelPlayNativeAd>()
@@ -31,6 +34,12 @@ object NativeAds {
 
     var isInitialized = false
         private set
+
+    private var installedAt = 0L
+
+    // 설치한 지 GRACE_PERIOD 가 안 지났는지.
+    val isInGracePeriod: Boolean
+        get() = System.currentTimeMillis() - installedAt < GRACE_PERIOD
 
     // 앱 키가 있어 광고를 쓰는지. SDK 초기화 전에도 연 횟수는 센다.
     private var enabled = false
@@ -76,6 +85,11 @@ object NativeAds {
 
         this.context = context.applicationContext
         opens = DataStore.Ad.getOpens(context)
+        installedAt = try {
+            context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
+        } catch (e: Exception) {
+            0L
+        }
         enabled = true
 
         if (BuildConfig.DEBUG) {
@@ -124,7 +138,7 @@ object NativeAds {
 
     // 첫 카드에 붙일 차례면 꺼내 준다.
     fun takeForOpen(): LevelPlayNativeAd? {
-        if (opens < OPEN_INTERVAL) return null
+        if (isInGracePeriod || opens < OPEN_INTERVAL) return null
 
         return take()?.also { opens = 0 }
     }
@@ -132,7 +146,7 @@ object NativeAds {
     // 넘긴 방향의 다음 카드가 SWIPE_INTERVAL 장째면 꺼내 준다.
     // 다음에 넘기면 광고 카드에 닿아 0 이 되도록 -1 로 둔다.
     fun takeForSwipe(): LevelPlayNativeAd? {
-        if (swipes < SWIPE_INTERVAL.dec()) return null
+        if (isInGracePeriod || swipes < SWIPE_INTERVAL.dec()) return null
 
         return take()?.also { swipes = -1 }
     }
