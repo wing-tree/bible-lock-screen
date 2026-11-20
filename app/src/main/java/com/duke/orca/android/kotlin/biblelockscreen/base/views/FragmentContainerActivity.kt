@@ -20,6 +20,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.bible.views.HighlightsFragme
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.FontSettingsFragment
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.LockScreenSettingsFragment
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.SettingsFragment
+import com.duke.orca.android.kotlin.biblelockscreen.store.StoreFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
@@ -85,6 +86,7 @@ class FragmentContainerActivity : BaseLockScreenActivity() {
             HighlightsFragment::class.java.simpleName -> HighlightsFragment()
             LockScreenSettingsFragment::class.java.simpleName -> LockScreenSettingsFragment()
             SettingsFragment::class.java.simpleName -> SettingsFragment()
+            StoreFragment::class.java.simpleName -> StoreFragment()
             else -> {
                 finish()
                 return

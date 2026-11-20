@@ -38,6 +38,7 @@ import com.duke.orca.android.kotlin.biblelockscreen.review.Review
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.FontSettingsFragment
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.LockScreenSettingsFragment
 import com.duke.orca.android.kotlin.biblelockscreen.settings.views.SettingsFragment
+import com.duke.orca.android.kotlin.biblelockscreen.store.StoreFragment
 import com.duke.orca.android.kotlin.biblelockscreen.widget.DropdownMenu
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -272,6 +273,7 @@ class VersePagerFragment : BaseFragment<FragmentVersePagerBinding>(),
             R.id.item_settings -> launchFragmentContainerActivity(SettingsFragment::class.java.simpleName)
             R.id.item_lock_screen -> launchFragmentContainerActivity(LockScreenSettingsFragment::class.java.simpleName)
             R.id.item_font -> launchFragmentContainerActivity(FontSettingsFragment::class.java.simpleName)
+            R.id.item_store -> launchFragmentContainerActivity(StoreFragment::class.java.simpleName)
             R.id.item_share_the_app -> shareApplication(requireContext())
             R.id.item_write_review -> Review.launchReviewFlow(requireActivity())
         }
